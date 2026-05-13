@@ -89,9 +89,9 @@
                             <p class="text-xs font-medium uppercase text-sky-700">Total inversiones</p>
                             <p class="mt-1 text-lg font-bold text-sky-900">${{ number_format($totalInversionesGeneral, 2) }}</p>
                         </div>
-                        <div class="rounded-md {{ $gananciaGeneral >= 0 ? 'bg-teal-50' : 'bg-red-50' }} p-3">
-                            <p class="text-xs font-medium uppercase {{ $gananciaGeneral >= 0 ? 'text-teal-700' : 'text-red-700' }}">Ganancia total</p>
-                            <p class="mt-1 text-lg font-bold {{ $gananciaGeneral >= 0 ? 'text-teal-900' : 'text-red-900' }}">${{ number_format($gananciaGeneral, 2) }}</p>
+                        <div class="rounded-md {{ $flujoGeneralDespuesInversion >= 0 ? 'bg-teal-50' : 'bg-red-50' }} p-3">
+                            <p class="text-xs font-medium uppercase {{ $flujoGeneralDespuesInversion >= 0 ? 'text-teal-700' : 'text-red-700' }}">Ganancia total</p>
+                            <p class="mt-1 text-lg font-bold {{ $flujoGeneralDespuesInversion >= 0 ? 'text-teal-900' : 'text-red-900' }}">${{ number_format($flujoGeneralDespuesInversion, 2) }}</p>
                         </div>
                     </div>
                     <div class="mt-4 h-80">
@@ -142,7 +142,7 @@
                 labels,
                 datasets: [
                     {
-                        label: 'Ganancia neta',
+                        label: 'Ganancia despues de inversion',
                         data: tendenciaMensual.map(row => row.ganancia),
                         borderColor: '#0f766e',
                         backgroundColor: 'rgba(15, 118, 110, .12)',

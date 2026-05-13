@@ -112,7 +112,7 @@ class ReporteFinancieroService
     {
         return $this->ventasVsGastosPorMes()->map(fn (array $row) => [
             'mes' => $row['mes'],
-            'ganancia' => $row['ingresos'] - $row['gastos'],
+            'ganancia' => $row['ingresos'] - $row['gastos'] - $row['inversiones'],
         ]);
     }
 }
