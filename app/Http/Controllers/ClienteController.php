@@ -16,6 +16,8 @@ class ClienteController extends Controller
                 $buscar = $request->string('buscar');
                 $query->where('nombre', 'like', "%{$buscar}%")
                     ->orWhere('empresa', 'like', "%{$buscar}%")
+                    ->orWhere('identificacion', 'like', "%{$buscar}%")
+                    ->orWhere('correo', 'like', "%{$buscar}%")
                     ->orWhere('telefono', 'like', "%{$buscar}%");
             })
             ->orderBy('nombre')
@@ -35,7 +37,10 @@ class ClienteController extends Controller
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255'],
             'empresa' => ['nullable', 'string', 'max:255'],
+            'identificacion' => ['nullable', 'string', 'max:30'],
             'telefono' => ['nullable', 'string', 'max:30'],
+            'direccion' => ['nullable', 'string', 'max:255'],
+            'correo' => ['nullable', 'email', 'max:255'],
         ]);
 
         Cliente::create($data + ['created_by' => $request->user()->id]);
@@ -53,7 +58,10 @@ class ClienteController extends Controller
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255'],
             'empresa' => ['nullable', 'string', 'max:255'],
+            'identificacion' => ['nullable', 'string', 'max:30'],
             'telefono' => ['nullable', 'string', 'max:30'],
+            'direccion' => ['nullable', 'string', 'max:255'],
+            'correo' => ['nullable', 'email', 'max:255'],
         ]);
 
         $cliente->update($data + ['updated_by' => $request->user()->id]);

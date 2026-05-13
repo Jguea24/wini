@@ -22,7 +22,7 @@ class VentaController extends Controller
             'hasta' => ['nullable', 'date', 'after_or_equal:desde'],
         ]);
 
-        $ventas = Venta::with(['cliente', 'user'])
+        $ventas = Venta::with(['cliente', 'user', 'factura'])
             ->betweenDates($filters['desde'] ?? null, $filters['hasta'] ?? null)
             ->latest('fecha')
             ->paginate(10)
@@ -116,7 +116,10 @@ class VentaController extends Controller
                 'empresa' => $data['cliente_empresa'],
             ],
             [
+                'identificacion' => $data['cliente_identificacion'] ?? null,
                 'telefono' => $data['cliente_telefono'],
+                'direccion' => $data['cliente_direccion'] ?? null,
+                'correo' => $data['cliente_correo'] ?? null,
             ],
         );
     }

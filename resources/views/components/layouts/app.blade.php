@@ -8,7 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
-    <div class="min-h-screen">
+    <div class="flex min-h-screen flex-col">
         @auth
             <header class="border-b border-stone-200 bg-white">
                 <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -17,6 +17,8 @@
                         <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('dashboard') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
                         <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('ventas.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('ventas.index') }}">Ventas</a>
                         <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('gastos.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('gastos.index') }}">Gastos</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('inversiones.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('inversiones.index') }}">Inversiones</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('facturas.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('facturas.index') }}">Facturas</a>
                         <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('reportes.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('reportes.index') }}">Reportes</a>
                     </nav>
                     <div class="flex items-center gap-3 text-sm">
@@ -30,7 +32,7 @@
             </header>
         @endauth
 
-        <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
             @if (session('status'))
                 <div class="mb-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">{{ session('status') }}</div>
             @endif
@@ -48,6 +50,7 @@
 
             {{ $slot }}
         </main>
+        <x-app-footer />
     </div>
 </body>
 </html>

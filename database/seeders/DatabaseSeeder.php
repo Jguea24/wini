@@ -27,7 +27,10 @@ class DatabaseSeeder extends Seeder
             'nombre' => 'Compras Andes',
             'empresa' => 'Andes Export S.A.',
         ], [
+            'identificacion' => '1799999999001',
             'telefono' => '0999999999',
+            'direccion' => 'Tena, Napo',
+            'correo' => 'compras@andes.example',
         ]);
 
         Venta::updateOrCreate([
@@ -62,7 +65,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Setting::setValue('company_name', 'Wini');
+        Setting::setValue('company_ruc', '0000000000001');
+        Setting::setValue('company_address', 'Tena, Napo, Ecuador');
+        Setting::setValue('company_phone', '0999999999');
+        Setting::setValue('company_email', 'admin@wini.local');
         Setting::setValue('currency', 'USD');
         Setting::setValue('report_footer', 'Producto sostenible');
+        Setting::setValue('invoice_prefix', 'FAC');
+        Setting::setValue('invoice_next_number', Setting::getValue('invoice_next_number', '1'));
+        Setting::setValue('invoice_tax_rate', Setting::getValue('invoice_tax_rate', '0'));
     }
 }

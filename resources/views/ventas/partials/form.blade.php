@@ -22,8 +22,17 @@
     <label class="text-sm font-medium">Empresa
         <input name="cliente_empresa" value="{{ old('cliente_empresa', $cliente?->empresa) }}" class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
     </label>
+    <label class="text-sm font-medium">RUC/Cédula
+        <input name="cliente_identificacion" value="{{ old('cliente_identificacion', $cliente?->identificacion) }}" class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
+    </label>
     <label class="text-sm font-medium">Telefono
         <input name="cliente_telefono" value="{{ old('cliente_telefono', $cliente?->telefono) }}" class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
+    </label>
+    <label class="text-sm font-medium">Dirección
+        <input name="cliente_direccion" value="{{ old('cliente_direccion', $cliente?->direccion) }}" class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
+    </label>
+    <label class="text-sm font-medium">Correo
+        <input type="email" name="cliente_correo" value="{{ old('cliente_correo', $cliente?->correo) }}" class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
     </label>
 </div>
 

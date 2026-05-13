@@ -66,6 +66,11 @@ class User extends Authenticatable
         return $this->hasMany(Inversion::class);
     }
 
+    public function facturas(): HasMany
+    {
+        return $this->hasMany(Factura::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

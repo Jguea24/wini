@@ -11,6 +11,7 @@ return [
     'sales' => 'Sales',
     'expenses' => 'Expenses',
     'investments' => 'Investments',
+    'invoices' => 'Invoices',
     'reports' => 'Reports',
     'profile' => 'Profile',
     'logout' => 'Log Out',

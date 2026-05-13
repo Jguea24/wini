@@ -27,6 +27,9 @@
                     <x-nav-link :href="route('inversiones.index')" :active="request()->routeIs('inversiones.*')">
                         {{ __('wini.investments') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('facturas.index')" :active="request()->routeIs('facturas.*')">
+                        {{ __('wini.invoices') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.*')">
                         {{ __('wini.reports') }}
                     </x-nav-link>
@@ -105,6 +108,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('inversiones.index')" :active="request()->routeIs('inversiones.*')">
                 {{ __('wini.investments') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('facturas.index')" :active="request()->routeIs('facturas.*')">
+                {{ __('wini.invoices') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.*')">
                 {{ __('wini.reports') }}

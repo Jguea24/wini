@@ -21,7 +21,10 @@ class UpdateVentaRequest extends FormRequest
             'fecha' => ['required', 'date', 'before_or_equal:today'],
             'cliente_nombre' => ['required', 'string', 'max:255'],
             'cliente_empresa' => ['nullable', 'string', 'max:255'],
+            'cliente_identificacion' => ['nullable', 'string', 'max:30'],
             'cliente_telefono' => ['nullable', 'string', 'max:30'],
+            'cliente_direccion' => ['nullable', 'string', 'max:255'],
+            'cliente_correo' => ['nullable', 'email', 'max:255'],
             'libras' => ['required', 'numeric', 'gt:0', 'max:99999999.99'],
             'precio_por_libra' => ['required', 'numeric', 'gte:0', 'max:999999.99'],
             'metodo_pago' => ['required', Rule::in(Venta::METODOS_PAGO)],
@@ -33,7 +36,10 @@ class UpdateVentaRequest extends FormRequest
         $this->merge([
             'cliente_nombre' => trim((string) $this->input('cliente_nombre')),
             'cliente_empresa' => trim((string) $this->input('cliente_empresa')) ?: null,
+            'cliente_identificacion' => trim((string) $this->input('cliente_identificacion')) ?: null,
             'cliente_telefono' => trim((string) $this->input('cliente_telefono')) ?: null,
+            'cliente_direccion' => trim((string) $this->input('cliente_direccion')) ?: null,
+            'cliente_correo' => trim((string) $this->input('cliente_correo')) ?: null,
             'metodo_pago' => strtolower(trim((string) $this->input('metodo_pago'))),
         ]);
     }

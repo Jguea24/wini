@@ -158,16 +158,4 @@
             }
         });
     </script>
-
-    
-    <div class="flex-grow">
-        <!-- todo tu contenido -->
-    </div>
-
-    <footer class="border-t border-gray-200 bg-white py-6 text-center">
-        <p class="text-sm text-gray-500">
-            © {{ date('Y') }} Wini Dashboard
-        </p>
-    </footer>
-
 </x-app-layout>

@@ -15,10 +15,10 @@
     </form>
 
     <div class="mt-6 overflow-x-auto rounded-lg border border-stone-200 bg-white shadow-sm">
-        <table class="w-full min-w-[980px] text-left text-sm">
+        <table class="w-full min-w-[1080px] text-left text-sm">
             <thead class="bg-stone-100 text-stone-600">
                 <tr>
-                    <th class="p-3">Fecha</th><th class="p-3">Cliente</th><th class="p-3">Empresa</th><th class="p-3">Libras</th><th class="p-3">Precio/lb</th><th class="p-3">Total</th><th class="p-3">Pago</th><th class="p-3">Usuario</th><th class="p-3"></th>
+                    <th class="p-3">Fecha</th><th class="p-3">Cliente</th><th class="p-3">Empresa</th><th class="p-3">Libras</th><th class="p-3">Precio/lb</th><th class="p-3">Total</th><th class="p-3">Pago</th><th class="p-3">Factura</th><th class="p-3">Usuario</th><th class="p-3"></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-stone-100">
@@ -31,6 +31,17 @@
                         <td class="p-3">${{ number_format($venta->precio_por_libra, 2) }}</td>
                         <td class="p-3 font-semibold">${{ number_format($venta->total, 2) }}</td>
                         <td class="p-3">{{ ucfirst($venta->metodo_pago) }}</td>
+                        <td class="p-3">
+                            @if ($venta->factura)
+                                <a href="{{ route('facturas.show', $venta->factura) }}" class="font-semibold text-emerald-700 hover:text-emerald-900">{{ $venta->factura->numero }}</a>
+                            @else
+                                <form method="POST" action="{{ route('facturas.store') }}">
+                                    @csrf
+                                    <input type="hidden" name="venta_id" value="{{ $venta->id }}">
+                                    <button class="rounded-md bg-stone-900 px-3 py-1.5 font-semibold text-white hover:bg-stone-700">Facturar</button>
+                                </form>
+                            @endif
+                        </td>
                         <td class="p-3">{{ $venta->user?->name ?? 'Sin usuario' }}</td>
                         <td class="p-3">
                             <div class="flex justify-end gap-2">
@@ -48,7 +59,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="9" class="p-6 text-center text-stone-500">No hay ventas registradas.</td></tr>
+                    <tr><td colspan="10" class="p-6 text-center text-stone-500">No hay ventas registradas.</td></tr>
                 @endforelse
             </tbody>
         </table>

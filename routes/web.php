@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\InversionController;
 use App\Http\Controllers\LanguageController;
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('inversiones', InversionController::class)->except(['show'])->parameters([
         'inversiones' => 'inversion',
     ]);
+    Route::resource('facturas', FacturaController::class)->only(['index', 'store', 'show', 'update']);
+    Route::get('/facturas/{factura}/pdf', [FacturaController::class, 'pdf'])->name('facturas.pdf');
     Route::resource('clientes', ClienteController::class);
 
     Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');

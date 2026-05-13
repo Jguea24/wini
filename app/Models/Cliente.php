@@ -12,7 +12,16 @@ class Cliente extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['nombre', 'empresa', 'telefono', 'created_by', 'updated_by'];
+    protected $fillable = [
+        'nombre',
+        'empresa',
+        'identificacion',
+        'telefono',
+        'direccion',
+        'correo',
+        'created_by',
+        'updated_by',
+    ];
 
     public function ventas(): HasMany
     {

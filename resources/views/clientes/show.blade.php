@@ -9,6 +9,12 @@
         </div>
     </x-slot>
     <div class="py-8"><div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section class="mb-6 grid gap-4 rounded-lg border border-gray-200 bg-white p-5 text-sm shadow-sm sm:grid-cols-2 lg:grid-cols-4">
+            <div><p class="text-gray-500">RUC/Cédula</p><p class="font-semibold">{{ $cliente->identificacion ?: 'Sin registrar' }}</p></div>
+            <div><p class="text-gray-500">Teléfono</p><p class="font-semibold">{{ $cliente->telefono ?: 'Sin registrar' }}</p></div>
+            <div><p class="text-gray-500">Correo</p><p class="font-semibold">{{ $cliente->correo ?: 'Sin registrar' }}</p></div>
+            <div><p class="text-gray-500">Dirección</p><p class="font-semibold">{{ $cliente->direccion ?: 'Sin registrar' }}</p></div>
+        </section>
         <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
             <table class="w-full min-w-[760px] text-left text-sm">
                 <thead class="bg-gray-100 text-gray-600"><tr><th class="p-3">Fecha</th><th class="p-3">Libras</th><th class="p-3">Precio/lb</th><th class="p-3">Total</th><th class="p-3">Usuario</th></tr></thead>

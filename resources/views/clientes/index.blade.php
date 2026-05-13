@@ -12,21 +12,23 @@
     <div class="py-8">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <form class="mb-5 flex gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                <input name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre, empresa o telefono" class="w-full rounded-md border-gray-300 focus:border-emerald-600 focus:ring-emerald-600">
+                <input name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre, empresa, RUC/cédula, correo o teléfono" class="w-full rounded-md border-gray-300 focus:border-emerald-600 focus:ring-emerald-600">
                 <button class="rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white">Buscar</button>
             </form>
 
             <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-                <table class="w-full min-w-[760px] text-left text-sm">
+                <table class="w-full min-w-[980px] text-left text-sm">
                     <thead class="bg-gray-100 text-gray-600">
-                        <tr><th class="p-3">Nombre</th><th class="p-3">Empresa</th><th class="p-3">Telefono</th><th class="p-3">Ventas</th><th class="p-3"></th></tr>
+                        <tr><th class="p-3">Nombre</th><th class="p-3">Empresa</th><th class="p-3">RUC/Cédula</th><th class="p-3">Teléfono</th><th class="p-3">Correo</th><th class="p-3">Ventas</th><th class="p-3"></th></tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse ($clientes as $cliente)
                             <tr>
                                 <td class="p-3 font-semibold">{{ $cliente->nombre }}</td>
                                 <td class="p-3">{{ $cliente->empresa ?: 'Sin empresa' }}</td>
-                                <td class="p-3">{{ $cliente->telefono ?: 'Sin telefono' }}</td>
+                                <td class="p-3">{{ $cliente->identificacion ?: 'Sin registrar' }}</td>
+                                <td class="p-3">{{ $cliente->telefono ?: 'Sin teléfono' }}</td>
+                                <td class="p-3">{{ $cliente->correo ?: 'Sin correo' }}</td>
                                 <td class="p-3">{{ $cliente->ventas_count }}</td>
                                 <td class="p-3">
                                     <div class="flex justify-end gap-2">
@@ -36,7 +38,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="p-6 text-center text-gray-500">No hay clientes registrados.</td></tr>
+                            <tr><td colspan="7" class="p-6 text-center text-gray-500">No hay clientes registrados.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
