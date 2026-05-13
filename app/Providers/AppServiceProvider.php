@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Gasto;
+use App\Models\Inversion;
 use App\Models\Venta;
 use App\Policies\GastoPolicy;
+use App\Policies\InversionPolicy;
 use App\Policies\VentaPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Venta::class, VentaPolicy::class);
         Gate::policy(Gasto::class, GastoPolicy::class);
+        Gate::policy(Inversion::class, InversionPolicy::class);
 
         if (app()->environment('production') && (bool) config('app.force_https', false)) {
             URL::forceScheme('https');

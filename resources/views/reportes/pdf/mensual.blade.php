@@ -30,7 +30,9 @@
         <tr><td>Total libras vendidas</td><td>{{ number_format($totalLibrasVendidas, 2) }}</td></tr>
         <tr><td>Total ingresos</td><td>${{ number_format($totalIngresos, 2) }}</td></tr>
         <tr><td>Total gastos</td><td>${{ number_format($totalGastos, 2) }}</td></tr>
+        <tr><td>Total inversiones</td><td>${{ number_format($totalInversiones, 2) }}</td></tr>
         <tr><td>Ganancia neta</td><td class="total">${{ number_format($gananciaNeta, 2) }}</td></tr>
+        <tr><td>Flujo despues de inversion</td><td>${{ number_format($flujoDespuesInversion, 2) }}</td></tr>
     </table>
 
     <table>
@@ -48,6 +50,15 @@
             <tr><td>{{ str_replace('_', ' ', ucfirst($gastoTipo->tipo)) }}</td><td>${{ number_format($gastoTipo->total_tipo, 2) }}</td></tr>
         @empty
             <tr><td colspan="2">Sin gastos en el periodo.</td></tr>
+        @endforelse
+    </table>
+
+    <table>
+        <tr><th colspan="2">Inversiones por tipo</th></tr>
+        @forelse ($inversionesPorTipo as $inversionTipo)
+            <tr><td>{{ str_replace('_', ' ', ucfirst($inversionTipo->tipo)) }}</td><td>${{ number_format($inversionTipo->total_tipo, 2) }}</td></tr>
+        @empty
+            <tr><td colspan="2">Sin inversiones en el periodo.</td></tr>
         @endforelse
     </table>
 </body>

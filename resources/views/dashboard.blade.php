@@ -49,7 +49,7 @@
                 </div>
             </section>
 
-            <section class="mt-4 grid gap-4 sm:grid-cols-3">
+            <section class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                     <p class="text-sm text-gray-500">Cliente principal</p>
                     <p class="mt-2 text-xl font-bold text-gray-900">{{ $clientePrincipal?->cliente?->nombre_comercial ?? 'Sin datos' }}</p>
@@ -62,17 +62,21 @@
                     <p class="text-sm text-gray-500">Precio promedio por libra</p>
                     <p class="mt-2 text-xl font-bold text-gray-900">${{ number_format($precioPromedioLibra, 2) }}</p>
                 </div>
+                <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+                    <p class="text-sm text-gray-500">Inversiones de {{ $currentMonth }}</p>
+                    <p class="mt-2 text-xl font-bold text-emerald-800">${{ number_format($totalInversiones, 2) }}</p>
+                </div>
             </section>
 
             <section class="mt-6 grid gap-6 lg:grid-cols-2">
                 <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                     <div class="flex flex-wrap items-start justify-between gap-4">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Ventas vs gastos</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">Ventas, gastos e inversiones</h3>
                             <p class="mt-1 text-sm text-gray-500">Totales acumulados de todos los registros.</p>
                         </div>
                     </div>
-                    <div class="mt-4 grid gap-3 sm:grid-cols-3">
+                    <div class="mt-4 grid gap-3 sm:grid-cols-4">
                         <div class="rounded-md bg-emerald-50 p-3">
                             <p class="text-xs font-medium uppercase text-emerald-700">Total ingresos</p>
                             <p class="mt-1 text-lg font-bold text-emerald-900">${{ number_format($totalIngresosGeneral, 2) }}</p>
@@ -80,6 +84,10 @@
                         <div class="rounded-md bg-amber-50 p-3">
                             <p class="text-xs font-medium uppercase text-amber-700">Total gastos</p>
                             <p class="mt-1 text-lg font-bold text-amber-900">${{ number_format($totalGastosGeneral, 2) }}</p>
+                        </div>
+                        <div class="rounded-md bg-sky-50 p-3">
+                            <p class="text-xs font-medium uppercase text-sky-700">Total inversiones</p>
+                            <p class="mt-1 text-lg font-bold text-sky-900">${{ number_format($totalInversionesGeneral, 2) }}</p>
                         </div>
                         <div class="rounded-md {{ $gananciaGeneral >= 0 ? 'bg-teal-50' : 'bg-red-50' }} p-3">
                             <p class="text-xs font-medium uppercase {{ $gananciaGeneral >= 0 ? 'text-teal-700' : 'text-red-700' }}">Ganancia total</p>
@@ -117,7 +125,8 @@
                 labels,
                 datasets: [
                     { label: 'Ingresos', data: ventasVsGastos.map(row => row.ingresos), backgroundColor: '#047857' },
-                    { label: 'Gastos', data: ventasVsGastos.map(row => row.gastos), backgroundColor: '#b45309' }
+                    { label: 'Gastos', data: ventasVsGastos.map(row => row.gastos), backgroundColor: '#b45309' },
+                    { label: 'Inversiones', data: ventasVsGastos.map(row => row.inversiones), backgroundColor: '#0369a1' }
                 ]
             },
             options: {
@@ -149,4 +158,16 @@
             }
         });
     </script>
+
+    
+    <div class="flex-grow">
+        <!-- todo tu contenido -->
+    </div>
+
+    <footer class="border-t border-gray-200 bg-white py-6 text-center">
+        <p class="text-sm text-gray-500">
+            © {{ date('Y') }} Wini Dashboard
+        </p>
+    </footer>
+
 </x-app-layout>

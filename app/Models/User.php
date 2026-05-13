@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Gasto::class);
     }
 
+    public function inversiones(): HasMany
+    {
+        return $this->hasMany(Inversion::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

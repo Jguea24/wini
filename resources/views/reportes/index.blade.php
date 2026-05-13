@@ -29,7 +29,7 @@
         <button class="rounded-md bg-emerald-700 px-4 py-2 font-semibold text-white">Generar</button>
     </form>
 
-    <section class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
             <p class="text-sm text-stone-500">Periodo</p>
             <p class="mt-2 text-lg font-bold">{{ $desde }} / {{ $hasta }}</p>
@@ -46,13 +46,21 @@
             <p class="text-sm text-stone-500">Gastos</p>
             <p class="mt-2 text-3xl font-bold">${{ number_format($totalGastos, 2) }}</p>
         </div>
-        <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm sm:col-span-2 lg:col-span-4">
+        <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+            <p class="text-sm text-stone-500">Inversiones</p>
+            <p class="mt-2 text-3xl font-bold">${{ number_format($totalInversiones, 2) }}</p>
+        </div>
+        <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm sm:col-span-2 lg:col-span-3">
             <p class="text-sm text-stone-500">Ganancia neta</p>
             <p class="mt-2 text-4xl font-bold {{ $gananciaNeta >= 0 ? 'text-emerald-800' : 'text-red-700' }}">${{ number_format($gananciaNeta, 2) }}</p>
         </div>
+        <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm sm:col-span-2">
+            <p class="text-sm text-stone-500">Flujo despues de inversion</p>
+            <p class="mt-2 text-4xl font-bold {{ $flujoDespuesInversion >= 0 ? 'text-emerald-800' : 'text-red-700' }}">${{ number_format($flujoDespuesInversion, 2) }}</p>
+        </div>
     </section>
 
-    <section class="mt-6 grid gap-6 lg:grid-cols-2">
+    <section class="mt-6 grid gap-6 lg:grid-cols-3">
         <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
             <h2 class="text-lg font-semibold">Ventas por cliente</h2>
             <div class="mt-4 overflow-x-auto">
@@ -78,6 +86,21 @@
                             <tr><td class="py-2">{{ str_replace('_', ' ', ucfirst($gastoTipo->tipo)) }}</td><td class="py-2 text-right font-semibold">${{ number_format($gastoTipo->total_tipo, 2) }}</td></tr>
                         @empty
                             <tr><td colspan="2" class="py-4 text-center text-stone-500">Sin gastos en el periodo.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+            <h2 class="text-lg font-semibold">Inversiones por tipo</h2>
+            <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-stone-500"><tr><th class="py-2">Tipo</th><th class="py-2 text-right">Total</th></tr></thead>
+                    <tbody class="divide-y divide-stone-100">
+                        @forelse ($inversionesPorTipo as $inversionTipo)
+                            <tr><td class="py-2">{{ str_replace('_', ' ', ucfirst($inversionTipo->tipo)) }}</td><td class="py-2 text-right font-semibold">${{ number_format($inversionTipo->total_tipo, 2) }}</td></tr>
+                        @empty
+                            <tr><td colspan="2" class="py-4 text-center text-stone-500">Sin inversiones en el periodo.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\GastoController;
+use App\Http\Controllers\InversionController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReporteController;
@@ -28,6 +29,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('ventas', VentaController::class)->except(['show']);
     Route::resource('gastos', GastoController::class)->except(['show']);
+    Route::resource('inversiones', InversionController::class)->except(['show'])->parameters([
+        'inversiones' => 'inversion',
+    ]);
     Route::resource('clientes', ClienteController::class);
 
     Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');

@@ -10,6 +10,7 @@ return [
     'monthly_pounds_sold' => 'Libras vendidas en :month',
     'sales' => 'Ventas',
     'expenses' => 'Gastos',
+    'investments' => 'Inversiones',
     'reports' => 'Reportes',
     'profile' => 'Perfil',
     'logout' => 'Salir',

@@ -1,4 +1,4 @@
-<x-guest-layout>
+cd <x-guest-layout>
     <main class="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <section class="w-full max-w-md">
             <div class="mb-4 flex justify-end">

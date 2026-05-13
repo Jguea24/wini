@@ -10,6 +10,7 @@ return [
     'monthly_pounds_sold' => 'Pounds sold in :month',
     'sales' => 'Sales',
     'expenses' => 'Expenses',
+    'investments' => 'Investments',
     'reports' => 'Reports',
     'profile' => 'Profile',
     'logout' => 'Log Out',

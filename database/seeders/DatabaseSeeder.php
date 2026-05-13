@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Cliente;
 use App\Models\Gasto;
+use App\Models\Inversion;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Venta;
@@ -47,6 +48,17 @@ class DatabaseSeeder extends Seeder
             'user_id' => $admin->id,
             'descripcion' => 'Traslado de cacao al centro de acopio',
             'monto' => 28.00,
+        ]);
+
+        Inversion::updateOrCreate([
+            'fecha' => now()->toDateString(),
+            'tipo' => 'equipos',
+            'concepto' => 'Balanza digital',
+        ], [
+            'user_id' => $admin->id,
+            'created_by' => $admin->id,
+            'descripcion' => 'Equipo para controlar peso de cacao vendido',
+            'monto' => 85.00,
         ]);
 
         Setting::setValue('company_name', 'Wini');
