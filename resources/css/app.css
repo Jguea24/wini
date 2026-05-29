@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+@layer components {
+    .app-shell-bg {
+        @apply bg-stone-100;
+    }
+
+    .app-card {
+        @apply rounded-lg border border-stone-200 bg-white shadow-sm;
+    }
+
+    .btn-cacao {
+        @apply rounded-md bg-amber-900 px-4 py-2 font-semibold text-white transition hover:bg-stone-950 focus:outline-none focus:ring-2 focus:ring-amber-800 focus:ring-offset-2;
+    }
+
+    .btn-ghost {
+        @apply rounded-md border border-stone-300 bg-white px-4 py-2 font-semibold text-stone-700 transition hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-800 focus:ring-offset-2;
+    }
+
+    .floating-control {
+        @apply relative pt-2;
+    }
+
+    .floating-label {
+        @apply absolute left-3 top-0 z-10 bg-white px-1 text-xs font-medium text-stone-600;
+    }
+
+    .floating-control input:not([type='checkbox']):not([type='radio']),
+    .floating-control select {
+        @apply h-11 w-full rounded-lg border-stone-700 bg-white px-3 text-sm text-stone-900 shadow-none focus:border-amber-900 focus:ring-1 focus:ring-amber-900;
+    }
+
+    .floating-control textarea {
+        @apply min-h-24 w-full rounded-lg border-stone-700 bg-white px-3 py-3 text-sm text-stone-900 shadow-none focus:border-amber-900 focus:ring-1 focus:ring-amber-900;
+    }
+
+    .floating-control input[type='password'],
+    .floating-control input[type='text'][name*='password'],
+    .floating-control input[name='password'],
+    .floating-control input[name='password_confirmation'],
+    .floating-control input[name='current_password'] {
+        @apply pr-11;
+    }
+}

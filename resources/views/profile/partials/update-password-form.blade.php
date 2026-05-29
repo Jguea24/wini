@@ -9,26 +9,35 @@
         @method('put')
 
         <div class="grid gap-5">
-            <label class="text-sm font-medium text-gray-700">Contrasena actual
-                <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full rounded-md border-gray-300 focus:border-emerald-600 focus:ring-emerald-600" autocomplete="current-password" />
+            <div class="text-sm font-medium text-gray-700">
+                <div class="floating-control mt-1">
+                    <span class="floating-label">Contrasena actual</span>
+                    <x-password-input id="update_password_current_password" name="current_password" autocomplete="current-password" />
+                </div>
                 <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
-            </label>
+            </div>
 
-            <label class="text-sm font-medium text-gray-700">Nueva contrasena
-                <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full rounded-md border-gray-300 focus:border-emerald-600 focus:ring-emerald-600" autocomplete="new-password" />
+            <div class="text-sm font-medium text-gray-700">
+                <div class="floating-control mt-1">
+                    <span class="floating-label">Nueva contrasena</span>
+                    <x-password-input id="update_password_password" name="password" autocomplete="new-password" />
+                </div>
                 <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-            </label>
+            </div>
 
-            <label class="text-sm font-medium text-gray-700">Confirmar contrasena
-                <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full rounded-md border-gray-300 focus:border-emerald-600 focus:ring-emerald-600" autocomplete="new-password" />
+            <div class="text-sm font-medium text-gray-700">
+                <div class="floating-control mt-1">
+                    <span class="floating-label">Confirmar contrasena</span>
+                    <x-password-input id="update_password_password_confirmation" name="password_confirmation" autocomplete="new-password" />
+                </div>
                 <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-            </label>
+            </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-4">
-            <button class="rounded-md bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-800">Actualizar contrasena</button>
+            <button class="rounded-md bg-amber-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-amber-900">Actualizar contrasena</button>
             @if (session('status') === 'password-updated')
-                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm font-medium text-emerald-700">Contrasena actualizada.</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm font-medium text-amber-900">Contrasena actualizada.</p>
             @endif
         </div>
     </form>

@@ -15,22 +15,24 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(['email' => 'admin@wini.local'], [
-            'name' => 'Administrador Wini',
+        $adminEmail = env('ADMIN_EMAIL', 'admin@wini.local');
+
+        User::updateOrCreate(['email' => $adminEmail], [
+            'name' => env('ADMIN_NAME', 'Administrador Wini'),
             'role' => 'admin',
-            'password' => Hash::make('password'),
+            'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
         ]);
 
-        $admin = User::where('email', 'admin@wini.local')->firstOrFail();
+        $admin = User::where('email', $adminEmail)->firstOrFail();
 
         $cliente = Cliente::updateOrCreate([
-            'nombre' => 'Compras Andes',
+            'nombre' => 'Intermediarios Andes',
             'empresa' => 'Andes Export S.A.',
         ], [
             'identificacion' => '1799999999001',
             'telefono' => '0999999999',
             'direccion' => 'Tena, Napo',
-            'correo' => 'compras@andes.example',
+            'correo' => 'ventas@andes.example',
         ]);
 
         Venta::updateOrCreate([
@@ -68,7 +70,7 @@ class DatabaseSeeder extends Seeder
         Setting::setValue('company_ruc', '0000000000001');
         Setting::setValue('company_address', 'Tena, Napo, Ecuador');
         Setting::setValue('company_phone', '0999999999');
-        Setting::setValue('company_email', 'admin@wini.local');
+        Setting::setValue('company_email', $adminEmail);
         Setting::setValue('currency', 'USD');
         Setting::setValue('report_footer', 'Producto sostenible');
         Setting::setValue('invoice_prefix', 'FAC');

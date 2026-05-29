@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Wini' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite('resources/js/app.js')
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
     <div class="flex min-h-screen flex-col">
         @auth
             <header class="border-b border-stone-200 bg-white">
                 <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-bold tracking-tight text-emerald-800">Wini</a>
+                    <a href="{{ route('dashboard') }}" class="text-xl font-bold tracking-tight text-amber-900">Wini</a>
                     <nav class="flex flex-wrap items-center gap-2 text-sm font-medium">
-                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('dashboard') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
-                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('ventas.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('ventas.index') }}">Ventas</a>
-                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('gastos.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('gastos.index') }}">Gastos</a>
-                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('inversiones.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('inversiones.index') }}">Inversiones</a>
-                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('facturas.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('facturas.index') }}">Facturas</a>
-                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('reportes.*') ? 'bg-emerald-50 text-emerald-800' : '' }}" href="{{ route('reportes.index') }}">Reportes</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('dashboard') ? 'bg-amber-50 text-amber-900' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('ventas.*') ? 'bg-amber-50 text-amber-900' : '' }}" href="{{ route('ventas.index') }}">Ventas</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('gastos.*') ? 'bg-amber-50 text-amber-900' : '' }}" href="{{ route('gastos.index') }}">Gastos</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('inversiones.*') ? 'bg-amber-50 text-amber-900' : '' }}" href="{{ route('inversiones.index') }}">Inversiones</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('facturas.*') ? 'bg-amber-50 text-amber-900' : '' }}" href="{{ route('facturas.index') }}">Facturas</a>
+                        <a class="rounded-md px-3 py-2 hover:bg-stone-100 {{ request()->routeIs('reportes.*') ? 'bg-amber-50 text-amber-900' : '' }}" href="{{ route('reportes.index') }}">Reportes</a>
                     </nav>
                     <div class="flex items-center gap-3 text-sm">
                         <span class="text-stone-600">{{ auth()->user()->name }} · {{ ucfirst(auth()->user()->role) }}</span>
@@ -34,7 +34,7 @@
 
         <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
             @if (session('status'))
-                <div class="mb-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">{{ session('status') }}</div>
+                <div class="mb-6 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{{ session('status') }}</div>
             @endif
 
             @if ($errors->any())

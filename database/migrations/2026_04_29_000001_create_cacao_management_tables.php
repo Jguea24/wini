@@ -8,14 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('proveedores', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre')->unique();
-            $table->string('telefono')->nullable();
-            $table->text('direccion')->nullable();
-            $table->timestamps();
-        });
-
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
@@ -24,16 +16,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['nombre', 'empresa']);
-        });
-
-        Schema::create('compras', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('proveedor_id')->constrained('proveedores')->cascadeOnUpdate()->restrictOnDelete();
-            $table->date('fecha');
-            $table->decimal('libras', 12, 2);
-            $table->decimal('precio_libra', 10, 2);
-            $table->decimal('total_pagado', 12, 2);
-            $table->timestamps();
         });
 
         Schema::create('ventas', function (Blueprint $table) {
@@ -68,8 +50,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('gastos');
         Schema::dropIfExists('ventas');
-        Schema::dropIfExists('compras');
         Schema::dropIfExists('clientes');
-        Schema::dropIfExists('proveedores');
     }
 };

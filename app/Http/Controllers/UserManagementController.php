@@ -36,6 +36,7 @@ class UserManagementController extends Controller
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'email_verified_at' => now(),
             'role' => $data['role'],
             'is_active' => $request->boolean('is_active'),
             'password' => Hash::make($data['password']),

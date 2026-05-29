@@ -15,11 +15,13 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite('resources/js/app.js')
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="flex min-h-screen flex-col bg-stone-100">
-            {{ $slot }}
+        <div class="flex h-screen flex-col overflow-hidden bg-stone-100">
+            <div class="min-h-0 flex-1 overflow-y-auto">
+                {{ $slot }}
+            </div>
             <x-app-footer />
         </div>
     </body>

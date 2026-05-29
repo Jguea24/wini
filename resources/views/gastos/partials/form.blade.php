@@ -1,19 +1,36 @@
-<label class="text-sm font-medium">Fecha
-    <input type="date" name="fecha" value="{{ old('fecha', optional($gasto?->fecha)->toDateString() ?? now()->toDateString()) }}" required class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
-</label>
+<section class="grid gap-5">
+    <div>
+        <h2 class="text-lg font-semibold text-stone-950">Datos del gasto</h2>
+        <p class="mt-1 text-sm text-stone-500">Clasifica el gasto para que los reportes calculen correctamente.</p>
+    </div>
 
-<label class="text-sm font-medium">Tipo de gasto
-    <select name="tipo" required class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
-        @foreach (\App\Models\Gasto::TIPOS as $tipo)
-            <option value="{{ $tipo }}" @selected(old('tipo', $gasto?->tipo) === $tipo)>{{ str_replace('_', ' ', ucfirst($tipo)) }}</option>
-        @endforeach
-    </select>
-</label>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div class="floating-control">
+            <label for="fecha" class="floating-label">Fecha</label>
+            <input id="fecha" type="date" name="fecha" value="{{ old('fecha', optional($gasto?->fecha)->toDateString() ?? now()->toDateString()) }}" required>
+            <x-input-error :messages="$errors->get('fecha')" class="mt-2" />
+        </div>
 
-<label class="text-sm font-medium">Descripcion
-    <textarea name="descripcion" rows="3" class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">{{ old('descripcion', $gasto?->descripcion) }}</textarea>
-</label>
+        <div class="floating-control">
+            <label for="tipo" class="floating-label">Tipo de gasto</label>
+            <select id="tipo" name="tipo" required>
+                @foreach (\App\Models\Gasto::TIPOS as $tipo)
+                    <option value="{{ $tipo }}" @selected(old('tipo', $gasto?->tipo) === $tipo)>{{ str_replace('_', ' ', ucfirst($tipo)) }}</option>
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
+        </div>
 
-<label class="text-sm font-medium">Monto
-    <input type="number" step="0.01" min="0" name="monto" value="{{ old('monto', $gasto?->monto) }}" required class="mt-1 w-full rounded-md border border-stone-300 px-3 py-2">
-</label>
+        <div class="floating-control sm:col-span-2">
+            <label for="descripcion" class="floating-label">Descripcion</label>
+            <textarea id="descripcion" name="descripcion" rows="4">{{ old('descripcion', $gasto?->descripcion) }}</textarea>
+            <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
+        </div>
+
+        <div class="floating-control">
+            <label for="monto" class="floating-label">Monto</label>
+            <input id="monto" type="number" step="0.01" min="0" name="monto" value="{{ old('monto', $gasto?->monto) }}" required>
+            <x-input-error :messages="$errors->get('monto')" class="mt-2" />
+        </div>
+    </div>
+</section>

@@ -16,9 +16,13 @@
             <section class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-3xl font-bold text-white shadow-sm">
-                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                        </div>
+                        @if ($user->profile_photo_path)
+                            <img src="{{ asset('storage/'.$user->profile_photo_path) }}" alt="{{ $user->name }}" class="h-20 w-20 shrink-0 rounded-full object-cover shadow-sm">
+                        @else
+                            <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-amber-900 text-3xl font-bold text-white shadow-sm">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                        @endif
                         <div>
                             <p class="text-2xl font-bold text-gray-900">{{ $user->name }}</p>
                             <p class="mt-1 text-sm text-gray-500">{{ $user->email }}</p>
@@ -30,9 +34,9 @@
                             <p class="text-xs font-medium uppercase text-gray-500">Rol</p>
                             <p class="mt-1 font-bold text-gray-900">{{ ucfirst($user->role) }}</p>
                         </div>
-                        <div class="rounded-md bg-emerald-50 p-3">
-                            <p class="text-xs font-medium uppercase text-emerald-700">Estado</p>
-                            <p class="mt-1 font-bold text-emerald-900">{{ $user->is_active ? 'Activo' : 'Inactivo' }}</p>
+                        <div class="rounded-md bg-amber-50 p-3">
+                            <p class="text-xs font-medium uppercase text-amber-900">Estado</p>
+                            <p class="mt-1 font-bold text-amber-950">{{ $user->is_active ? 'Activo' : 'Inactivo' }}</p>
                         </div>
                         <div class="rounded-md bg-gray-50 p-3">
                             <p class="text-xs font-medium uppercase text-gray-500">Creada</p>

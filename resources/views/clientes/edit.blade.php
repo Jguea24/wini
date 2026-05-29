@@ -5,7 +5,7 @@
             @csrf
             @method('PUT')
             @include('clientes.partials.form')
-            <div class="flex gap-3"><button class="rounded-md bg-emerald-700 px-4 py-2 font-semibold text-white">Actualizar</button><a href="{{ route('clientes.index') }}" class="rounded-md border border-gray-300 px-4 py-2 font-semibold">Cancelar</a></div>
+            <div class="flex gap-3"><button class="rounded-md bg-amber-900 px-4 py-2 font-semibold text-white">Actualizar</button><a href="{{ route('clientes.index') }}" class="rounded-md border border-gray-300 px-4 py-2 font-semibold">Cancelar</a></div>
         </form>
     </div></div>
 </x-app-layout>

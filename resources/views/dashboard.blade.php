@@ -11,15 +11,15 @@
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <form class="flex gap-2">
-                    <select name="mes" class="rounded-md border-gray-300 text-sm focus:border-emerald-600 focus:ring-emerald-600">
+                    <select name="mes" class="rounded-md border-gray-300 text-sm focus:border-amber-800 focus:ring-amber-800">
                         @foreach(__('wini.months') as $index => $monthName)
                             <option value="{{ $index + 1 }}" @selected($selectedMonth === $index + 1)>{{ $monthName }}</option>
                         @endforeach
                     </select>
-                    <input name="anio" type="number" value="{{ $selectedYear }}" min="2000" max="2100" class="w-24 rounded-md border-gray-300 text-sm focus:border-emerald-600 focus:ring-emerald-600">
-                    <button class="rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white">Filtrar</button>
+                    <input name="anio" type="number" value="{{ $selectedYear }}" min="2000" max="2100" class="w-24 rounded-md border-gray-300 text-sm focus:border-amber-800 focus:ring-amber-800">
+                    <button class="rounded-md bg-stone-800 px-3 py-2 text-sm font-semibold text-white hover:bg-stone-900">Filtrar</button>
                 </form>
-                <a href="{{ route('ventas.create') }}" class="rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800">
+                <a href="{{ route('ventas.create') }}" class="rounded-md bg-amber-900 px-4 py-2 text-sm font-semibold text-white hover:bg-stone-950">
                     {{ __('wini.new_sale') }}
                 </a>
             </div>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                     <p class="text-sm text-gray-500">{{ __('wini.monthly_profit', ['month' => $currentMonth]) }}</p>
-                    <p class="mt-2 text-3xl font-bold {{ $gananciaNeta >= 0 ? 'text-emerald-700' : 'text-red-700' }}">
+                    <p class="mt-2 text-3xl font-bold {{ $gananciaNeta >= 0 ? 'text-amber-900' : 'text-red-700' }}">
                         ${{ number_format($gananciaNeta, 2) }}
                     </p>
                 </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                     <p class="text-sm text-gray-500">Inversiones de {{ $currentMonth }}</p>
-                    <p class="mt-2 text-xl font-bold text-emerald-800">${{ number_format($totalInversiones, 2) }}</p>
+                    <p class="mt-2 text-xl font-bold text-amber-900">${{ number_format($totalInversiones, 2) }}</p>
                 </div>
             </section>
 
@@ -77,21 +77,21 @@
                         </div>
                     </div>
                     <div class="mt-4 grid gap-3 sm:grid-cols-4">
-                        <div class="rounded-md bg-emerald-50 p-3">
-                            <p class="text-xs font-medium uppercase text-emerald-700">Total ingresos</p>
-                            <p class="mt-1 text-lg font-bold text-emerald-900">${{ number_format($totalIngresosGeneral, 2) }}</p>
+                        <div class="rounded-md bg-amber-50 p-3">
+                            <p class="text-xs font-medium uppercase text-amber-800">Total ingresos</p>
+                            <p class="mt-1 text-lg font-bold text-amber-950">${{ number_format($totalIngresosGeneral, 2) }}</p>
                         </div>
                         <div class="rounded-md bg-amber-50 p-3">
                             <p class="text-xs font-medium uppercase text-amber-700">Total gastos</p>
                             <p class="mt-1 text-lg font-bold text-amber-900">${{ number_format($totalGastosGeneral, 2) }}</p>
                         </div>
-                        <div class="rounded-md bg-sky-50 p-3">
-                            <p class="text-xs font-medium uppercase text-sky-700">Total inversiones</p>
-                            <p class="mt-1 text-lg font-bold text-sky-900">${{ number_format($totalInversionesGeneral, 2) }}</p>
+                        <div class="rounded-md bg-stone-100 p-3">
+                            <p class="text-xs font-medium uppercase text-stone-700">Total inversiones</p>
+                            <p class="mt-1 text-lg font-bold text-stone-900">${{ number_format($totalInversionesGeneral, 2) }}</p>
                         </div>
-                        <div class="rounded-md {{ $flujoGeneralDespuesInversion >= 0 ? 'bg-teal-50' : 'bg-red-50' }} p-3">
-                            <p class="text-xs font-medium uppercase {{ $flujoGeneralDespuesInversion >= 0 ? 'text-teal-700' : 'text-red-700' }}">Ganancia total</p>
-                            <p class="mt-1 text-lg font-bold {{ $flujoGeneralDespuesInversion >= 0 ? 'text-teal-900' : 'text-red-900' }}">${{ number_format($flujoGeneralDespuesInversion, 2) }}</p>
+                        <div class="rounded-md {{ $flujoGeneralDespuesInversion >= 0 ? 'bg-orange-50' : 'bg-red-50' }} p-3">
+                            <p class="text-xs font-medium uppercase {{ $flujoGeneralDespuesInversion >= 0 ? 'text-orange-800' : 'text-red-700' }}">Ganancia total</p>
+                            <p class="mt-1 text-lg font-bold {{ $flujoGeneralDespuesInversion >= 0 ? 'text-orange-950' : 'text-red-900' }}">${{ number_format($flujoGeneralDespuesInversion, 2) }}</p>
                         </div>
                     </div>
                     <div class="mt-4 h-80">
@@ -124,9 +124,9 @@
             data: {
                 labels,
                 datasets: [
-                    { label: 'Ingresos', data: ventasVsGastos.map(row => row.ingresos), backgroundColor: '#047857' },
+                    { label: 'Ingresos', data: ventasVsGastos.map(row => row.ingresos), backgroundColor: '#78350f' },
                     { label: 'Gastos', data: ventasVsGastos.map(row => row.gastos), backgroundColor: '#b45309' },
-                    { label: 'Inversiones', data: ventasVsGastos.map(row => row.inversiones), backgroundColor: '#0369a1' }
+                    { label: 'Inversiones', data: ventasVsGastos.map(row => row.inversiones), backgroundColor: '#57534e' }
                 ]
             },
             options: {
@@ -144,8 +144,8 @@
                     {
                         label: 'Ganancia despues de inversion',
                         data: tendenciaMensual.map(row => row.ganancia),
-                        borderColor: '#0f766e',
-                        backgroundColor: 'rgba(15, 118, 110, .12)',
+                        borderColor: '#78350f',
+                        backgroundColor: 'rgba(120, 53, 15, .14)',
                         fill: true,
                         tension: .3
                     }

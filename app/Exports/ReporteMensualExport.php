@@ -38,7 +38,6 @@ class ReporteMensualExport implements FromArray, ShouldAutoSize, WithHeadings, W
             $rows[] = [$venta->cliente?->nombre_comercial ?? 'Sin cliente', $venta->total_cliente];
         }
 
-        $rows[] = ['', ''];
         $rows[] = ['Gastos por tipo', ''];
 
         foreach ($this->report['gastosPorTipo'] as $gasto) {

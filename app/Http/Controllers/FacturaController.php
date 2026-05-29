@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -122,8 +123,22 @@ class FacturaController extends Controller
                     'email' => Setting::getValue('company_email', ''),
                 ],
                 'footer' => Setting::getValue('report_footer', 'Producto sostenible'),
+                'signaturePath' => $this->invoiceSignaturePath(),
+                'signatureName' => Setting::getValue('invoice_signature_name', 'Johnny Grefa'),
+                'signatureRole' => Setting::getValue('invoice_signature_role', 'CEO de Wini'),
             ])
             ->download("factura-{$factura->numero}.pdf");
+    }
+
+    private function invoiceSignaturePath(): ?string
+    {
+        $path = Setting::getValue('invoice_signature_path');
+
+        if (! $path || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        return Storage::disk('public')->path($path);
     }
 
     private function nextNumber(): string

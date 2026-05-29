@@ -1,12 +1,23 @@
 <x-layouts.app title="Editar venta | Wini">
-    <h1 class="text-3xl font-bold tracking-tight">Editar venta</h1>
-    <form method="POST" action="{{ route('ventas.update', $venta) }}" class="mt-6 grid max-w-3xl gap-4 rounded-lg border border-stone-200 bg-white p-6 shadow-sm">
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-stone-950">Editar venta</h1>
+            <p class="mt-1 text-sm text-stone-500">Actualiza los datos de la venta registrada.</p>
+        </div>
+        <a href="{{ route('ventas.index') }}" class="btn-ghost">Volver</a>
+    </div>
+
+    <form method="POST" action="{{ route('ventas.update', $venta) }}" class="app-card max-w-5xl overflow-hidden">
         @csrf
         @method('PUT')
-        @include('ventas.partials.form', ['venta' => $venta])
-        <div class="flex gap-3">
-            <button class="rounded-md bg-emerald-700 px-4 py-2 font-semibold text-white">Actualizar</button>
-            <a href="{{ route('ventas.index') }}" class="rounded-md border border-stone-300 px-4 py-2 font-semibold">Cancelar</a>
+
+        <div class="grid gap-6 p-6">
+            @include('ventas.partials.form', ['venta' => $venta])
+        </div>
+
+        <div class="flex flex-wrap justify-end gap-3 border-t border-stone-100 bg-stone-50 px-6 py-4">
+            <a href="{{ route('ventas.index') }}" class="btn-ghost">Cancelar</a>
+            <button class="btn-cacao">Actualizar venta</button>
         </div>
     </form>
 </x-layouts.app>

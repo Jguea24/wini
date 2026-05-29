@@ -1,3 +1,5 @@
+@php($navUser = Auth::user())
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -5,7 +7,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-bold tracking-tight text-emerald-800">
+                    <a href="{{ route('dashboard') }}" class="text-xl font-bold tracking-tight text-amber-900">
                         Wini
                     </a>
                 </div>
@@ -50,7 +52,15 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            @if ($navUser?->profile_photo_path)
+                                <img src="{{ asset('storage/'.$navUser->profile_photo_path) }}" alt="{{ $navUser->name }}" class="me-2 h-8 w-8 rounded-full object-cover">
+                            @else
+                                <span class="me-2 flex h-8 w-8 items-center justify-center rounded-full bg-amber-900 text-xs font-bold text-white">
+                                    {{ strtoupper(substr($navUser?->name ?? 'W', 0, 1)) }}
+                                </span>
+                            @endif
+
+                            <div>{{ $navUser?->name }}</div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -127,9 +137,19 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="flex items-center gap-3 px-4">
+                @if ($navUser?->profile_photo_path)
+                    <img src="{{ asset('storage/'.$navUser->profile_photo_path) }}" alt="{{ $navUser->name }}" class="h-10 w-10 rounded-full object-cover">
+                @else
+                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-900 text-sm font-bold text-white">
+                        {{ strtoupper(substr($navUser?->name ?? 'W', 0, 1)) }}
+                    </span>
+                @endif
+
+                <div>
+                    <div class="font-medium text-base text-gray-800">{{ $navUser?->name }}</div>
+                    <div class="font-medium text-sm text-gray-500">{{ $navUser?->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">

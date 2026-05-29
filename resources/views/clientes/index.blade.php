@@ -5,14 +5,14 @@
                 <h2 class="text-xl font-semibold text-gray-800">Clientes</h2>
                 <p class="mt-1 text-sm text-gray-500">Empresas compradoras y su historial comercial.</p>
             </div>
-            <a href="{{ route('clientes.create') }}" class="rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white">Nuevo cliente</a>
+            <a href="{{ route('clientes.create') }}" class="rounded-md bg-amber-900 px-4 py-2 text-sm font-semibold text-white">Nuevo cliente</a>
         </div>
     </x-slot>
 
     <div class="py-8">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <form class="mb-5 flex gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                <input name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre, empresa, RUC/cédula, correo o teléfono" class="w-full rounded-md border-gray-300 focus:border-emerald-600 focus:ring-emerald-600">
+                <input name="buscar" value="{{ request('buscar') }}" placeholder="Buscar por nombre, empresa, RUC/cédula, correo o teléfono" class="w-full rounded-md border-gray-300 focus:border-amber-800 focus:ring-amber-800">
                 <button class="rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white">Buscar</button>
             </form>
 

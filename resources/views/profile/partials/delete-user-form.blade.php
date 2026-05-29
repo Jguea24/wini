@@ -20,7 +20,10 @@
 
             <div class="mt-6">
                 <x-input-label for="password" value="Contrasena" class="sr-only" />
-                <x-text-input id="password" name="password" type="password" class="mt-1 block w-full rounded-md border-gray-300 focus:border-red-600 focus:ring-red-600" placeholder="Contrasena" />
+                <div class="floating-control mt-1">
+                    <span class="floating-label">Contrasena</span>
+                    <x-password-input id="password" name="password" placeholder="Contrasena" />
+                </div>
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 

@@ -14,6 +14,9 @@
         .right { text-align: right; }
         .total { font-size: 16px; font-weight: bold; color: #065f46; }
         .muted { color: #57534e; }
+        .signature { margin-top: 34px; width: 280px; text-align: center; }
+        .signature img { max-width: 220px; max-height: 90px; margin: 0 auto 8px; }
+        .signature-line { border-top: 1px solid #78716c; padding-top: 8px; }
     </style>
 </head>
 <body>
@@ -55,6 +58,15 @@
     </table>
 
     <p class="muted">{{ $footer }}</p>
+    <div class="signature">
+        @if ($signaturePath && file_exists($signaturePath))
+            <img src="{{ $signaturePath }}" alt="Firma">
+        @endif
+        <div class="signature-line">
+            <strong>Firmado por: {{ $signatureName ?: 'Johnny Grefa' }}</strong><br>
+            <span class="muted">{{ $signatureRole ?: 'CEO de Wini' }}</span>
+        </div>
+    </div>
     <p class="muted">Creada por: {{ $factura->user?->name ?? 'Sin usuario' }}. Actualizada por: {{ $factura->actualizador?->name ?? 'Sin cambios' }}. Anulada por: {{ $factura->anulador?->name ?? 'No anulada' }}.</p>
 </body>
 </html>
