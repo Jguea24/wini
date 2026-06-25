@@ -1,11 +1,22 @@
 <x-app-layout>
-    <x-slot name="header"><h2 class="text-xl font-semibold text-gray-800">Editar cliente</h2></x-slot>
-    <div class="py-8"><div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <form method="POST" action="{{ route('clientes.update', $cliente) }}" class="grid gap-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            @csrf
-            @method('PUT')
-            @include('clientes.partials.form')
-            <div class="flex gap-3"><button class="rounded-md bg-amber-900 px-4 py-2 font-semibold text-white">Actualizar</button><a href="{{ route('clientes.index') }}" class="rounded-md border border-gray-300 px-4 py-2 font-semibold">Cancelar</a></div>
-        </form>
-    </div></div>
+    <x-slot name="header">
+        <div class="mx-auto max-w-4xl">
+            <nav class="flex items-center gap-2 text-sm text-stone-500" aria-label="Breadcrumb">
+                <a href="{{ route('clientes.index') }}" class="transition-colors hover:text-[#6F4E37]">Clientes</a>
+                <svg class="h-4 w-4 text-stone-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium text-stone-900">Editar cliente</span>
+            </nav>
+        </div>
+    </x-slot>
+
+    @include('clientes.partials.premium-form', [
+        'action' => route('clientes.update', $cliente),
+        'method' => 'PUT',
+        'title' => 'Editar Cliente',
+        'description' => 'Actualice la informacion del cliente.',
+        'submitLabel' => 'Guardar Cambios',
+        'iconPath' => 'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a8.25 8.25 0 0 1 15 0',
+    ])
 </x-app-layout>

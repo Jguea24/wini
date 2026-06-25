@@ -8,6 +8,8 @@ use App\Models\Venta;
 use App\Policies\GastoPolicy;
 use App\Policies\InversionPolicy;
 use App\Policies\VentaPolicy;
+use App\Repositories\CocoaMarketPriceRepository;
+use App\Repositories\Contracts\CocoaMarketPriceRepositoryInterface;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -19,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CocoaMarketPriceRepositoryInterface::class, CocoaMarketPriceRepository::class);
     }
 
     /**

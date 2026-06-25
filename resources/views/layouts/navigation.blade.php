@@ -47,26 +47,26 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-5">
                 <x-language-switcher />
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center gap-2 rounded-full bg-white text-sm font-medium text-slate-600 transition hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-800 focus:ring-offset-2">
                             @if ($navUser?->profile_photo_path)
-                                <img src="{{ asset('storage/'.$navUser->profile_photo_path) }}" alt="{{ $navUser->name }}" class="me-2 h-8 w-8 rounded-full object-cover">
+                                <img src="{{ asset('storage/'.$navUser->profile_photo_path) }}" alt="{{ $navUser->name }}" class="h-9 w-9 rounded-full object-cover ring-2 ring-white">
                             @else
-                                <span class="me-2 flex h-8 w-8 items-center justify-center rounded-full bg-amber-900 text-xs font-bold text-white">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-amber-900 text-xs font-bold text-white ring-2 ring-white">
                                     {{ strtoupper(substr($navUser?->name ?? 'W', 0, 1)) }}
                                 </span>
                             @endif
 
-                            <div>{{ $navUser?->name }}</div>
+                            <span class="max-w-36 truncate">{{ $navUser?->name }}</span>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <span class="text-slate-400">
+                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
-                            </div>
+                            </span>
                         </button>
                     </x-slot>
 

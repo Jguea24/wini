@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CocoaMarketController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\InversionController;
@@ -36,6 +37,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('facturas', FacturaController::class)->only(['index', 'store', 'show', 'update']);
     Route::get('/facturas/{factura}/pdf', [FacturaController::class, 'pdf'])->name('facturas.pdf');
     Route::resource('clientes', ClienteController::class);
+
+    Route::get('/mercado-cacao', [CocoaMarketController::class, 'index'])->name('mercado-cacao.index');
+    Route::get('/mercado-cacao/live', [CocoaMarketController::class, 'live'])->name('mercado-cacao.live');
+    Route::post('/mercado-cacao/actualizar', [CocoaMarketController::class, 'refresh'])->name('mercado-cacao.refresh');
 
     Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
     Route::get('/reportes/excel', [ReporteController::class, 'excel'])->name('reportes.excel');

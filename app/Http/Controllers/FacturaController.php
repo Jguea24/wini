@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Factura;
 use App\Models\Setting;
 use App\Models\Venta;
+use App\Services\PdfQrCodeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -108,26 +109,44 @@ class FacturaController extends Controller
         return redirect()->route('facturas.show', $factura)->with('status', 'Factura actualizada correctamente.');
     }
 
-    public function pdf(Factura $factura)
+    public function pdf(Factura $factura, PdfQrCodeService $qrCode)
     {
         $factura->load(['venta.cliente', 'venta.user', 'user', 'actualizador', 'anulador']);
+        $company = [
+            'name' => Setting::getValue('company_name', 'Wini'),
+            'ruc' => Setting::getValue('company_ruc', ''),
+            'address' => Setting::getValue('company_address', ''),
+            'phone' => Setting::getValue('company_phone', ''),
+            'email' => Setting::getValue('company_email', ''),
+        ];
 
         return app('dompdf.wrapper')
             ->loadView('facturas.pdf.show', [
                 'factura' => $factura,
-                'company' => [
-                    'name' => Setting::getValue('company_name', 'Wini'),
-                    'ruc' => Setting::getValue('company_ruc', ''),
-                    'address' => Setting::getValue('company_address', ''),
-                    'phone' => Setting::getValue('company_phone', ''),
-                    'email' => Setting::getValue('company_email', ''),
-                ],
+                'company' => $company,
                 'footer' => Setting::getValue('report_footer', 'Producto sostenible'),
                 'signaturePath' => $this->invoiceSignaturePath(),
                 'signatureName' => Setting::getValue('invoice_signature_name', 'Johnny Grefa'),
                 'signatureRole' => Setting::getValue('invoice_signature_role', 'CEO de Wini'),
+                'qrCodeDataUri' => $qrCode->dataUri($this->invoiceQrPayload($factura, $company)),
             ])
             ->download("factura-{$factura->numero}.pdf");
+    }
+
+    private function invoiceQrPayload(Factura $factura, array $company): string
+    {
+        return implode("\n", [
+            'WINI - FACTURA',
+            'Empresa: '.$company['name'],
+            'RUC: '.($company['ruc'] ?: 'No registrado'),
+            'Numero: '.$factura->numero,
+            'Fecha: '.$factura->fecha_emision->format('Y-m-d'),
+            'Cliente: '.$factura->venta->cliente->nombre_comercial,
+            'Identificacion: '.($factura->venta->cliente->identificacion ?: 'No registrada'),
+            'Total: $'.number_format($factura->total, 2, '.', ''),
+            'Estado: '.ucfirst($factura->estado),
+            'URL: '.route('facturas.show', $factura),
+        ]);
     }
 
     private function invoiceSignaturePath(): ?string

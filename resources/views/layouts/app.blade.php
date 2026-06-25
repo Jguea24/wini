@@ -9,6 +9,7 @@
 
         <link rel="icon" type="image/png" href="{{ asset('images/wini-logo.png') }}">
         <link rel="apple-touch-icon" href="{{ asset('images/wini-logo.png') }}">
+        <x-pwa-head />
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

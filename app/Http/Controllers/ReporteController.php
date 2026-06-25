@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReporteMensualExport;
+use App\Services\PdfQrCodeService;
 use App\Services\ReporteFinancieroService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,13 +26,30 @@ class ReporteController extends Controller
         return Excel::download(new ReporteMensualExport($report), 'reporte-wini.xlsx');
     }
 
-    public function pdf(Request $request, ReporteFinancieroService $reportes)
+    public function pdf(Request $request, ReporteFinancieroService $reportes, PdfQrCodeService $qrCode)
     {
         $report = $this->reportFromRequest($request, $reportes);
 
         return app('dompdf.wrapper')
-            ->loadView('reportes.pdf.mensual', $report)
+            ->loadView('reportes.pdf.mensual', $report + [
+                'qrCodeDataUri' => $qrCode->dataUri($this->reportQrPayload($report)),
+            ])
             ->download('reporte-wini.pdf');
+    }
+
+    private function reportQrPayload(array $report): string
+    {
+        return implode("\n", [
+            'WINI - REPORTE FINANCIERO',
+            'Periodo: '.$report['desde'].' a '.$report['hasta'],
+            'Libras vendidas: '.number_format($report['totalLibrasVendidas'], 2, '.', ''),
+            'Ingresos: $'.number_format($report['totalIngresos'], 2, '.', ''),
+            'Gastos: $'.number_format($report['totalGastos'], 2, '.', ''),
+            'Inversiones: $'.number_format($report['totalInversiones'], 2, '.', ''),
+            'Ganancia neta: $'.number_format($report['gananciaNeta'], 2, '.', ''),
+            'Flujo despues de inversion: $'.number_format($report['flujoDespuesInversion'], 2, '.', ''),
+            'Generado: '.now()->format('Y-m-d H:i'),
+        ]);
     }
 
     private function reportFromRequest(Request $request, ReporteFinancieroService $reportes): array

@@ -5,8 +5,10 @@
     <style>
         body { font-family: DejaVu Sans, sans-serif; color: #1c1917; font-size: 12px; }
         .header { width: 100%; border-bottom: 2px solid #065f46; padding-bottom: 14px; margin-bottom: 18px; }
+        .qr { float: right; width: 118px; text-align: center; font-size: 9px; color: #57534e; }
+        .qr img { width: 104px; height: 104px; }
         .logo { width: 112px; vertical-align: middle; }
-        .brand { display: inline-block; vertical-align: middle; margin-left: 18px; }
+        .brand { display: inline-block; vertical-align: middle; margin-left: 18px; max-width: 420px; }
         h1 { color: #065f46; margin: 0 0 4px; }
         table { border-collapse: collapse; width: 100%; margin-top: 24px; }
         th, td { border: 1px solid #d6d3d1; padding: 10px; text-align: left; }
@@ -16,6 +18,13 @@
 </head>
 <body>
     <div class="header">
+        @isset($qrCodeDataUri)
+            <div class="qr">
+                <img src="{{ $qrCodeDataUri }}" alt="Codigo QR">
+                <div>Verificacion</div>
+            </div>
+        @endisset
+
         @if (file_exists(public_path('images/wini-logo.png')))
             <img src="{{ public_path('images/wini-logo.png') }}" class="logo" alt="Wini">
         @endif
