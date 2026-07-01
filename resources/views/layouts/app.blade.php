@@ -19,7 +19,10 @@
         @vite('resources/js/app.js')
     </head>
     <body class="font-sans antialiased">
-        <div class="flex min-h-screen flex-col bg-stone-100">
+        <div
+            x-data="{ showLoginSuccess: {{ session('login_success') ? 'true' : 'false' }} }"
+            class="flex min-h-screen flex-col bg-stone-100"
+        >
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -36,6 +39,45 @@
                 {{ $slot }}
             </main>
             <x-app-footer />
+
+            <div
+                x-cloak
+                x-show="showLoginSuccess"
+                x-transition.opacity.duration.200ms
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="login-success-title"
+            >
+                <div
+                    x-show="showLoginSuccess"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="scale-95 opacity-0"
+                    x-transition:enter-end="scale-100 opacity-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="scale-100 opacity-100"
+                    x-transition:leave-end="scale-95 opacity-0"
+                    @click.outside="showLoginSuccess = false"
+                    class="w-full max-w-xs rounded-md bg-white px-8 py-7 text-center shadow-2xl"
+                >
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-emerald-500 text-emerald-500">
+                        <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+                        </svg>
+                    </div>
+
+                    <h2 id="login-success-title" class="mt-5 text-lg font-bold text-stone-700">Ingreso exitoso</h2>
+                    <p class="mt-2 text-sm text-stone-500">Bienvenido al sistema Wini.</p>
+
+                    <button
+                        type="button"
+                        @click="showLoginSuccess = false"
+                        class="mt-5 rounded bg-emerald-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    >
+                        Aceptar
+                    </button>
+                </div>
+            </div>
         </div>
     </body>
 </html>

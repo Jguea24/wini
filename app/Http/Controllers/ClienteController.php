@@ -34,14 +34,7 @@ class ClienteController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'empresa' => ['nullable', 'string', 'max:255'],
-            'identificacion' => ['nullable', 'string', 'max:30'],
-            'telefono' => ['nullable', 'string', 'max:30'],
-            'direccion' => ['nullable', 'string', 'max:255'],
-            'correo' => ['nullable', 'email', 'max:255'],
-        ]);
+        $data = $request->validate($this->rules());
 
         Cliente::create($data + ['created_by' => $request->user()->id]);
 
@@ -55,14 +48,7 @@ class ClienteController extends Controller
 
     public function update(Request $request, Cliente $cliente): RedirectResponse
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'empresa' => ['nullable', 'string', 'max:255'],
-            'identificacion' => ['nullable', 'string', 'max:30'],
-            'telefono' => ['nullable', 'string', 'max:30'],
-            'direccion' => ['nullable', 'string', 'max:255'],
-            'correo' => ['nullable', 'email', 'max:255'],
-        ]);
+        $data = $request->validate($this->rules());
 
         $cliente->update($data + ['updated_by' => $request->user()->id]);
 
@@ -83,5 +69,106 @@ class ClienteController extends Controller
         $cliente->delete();
 
         return redirect()->route('clientes.index')->with('status', 'Cliente eliminado correctamente.');
+    }
+
+    private function rules(): array
+    {
+        return [
+            'nombre' => ['required', 'string', 'max:255'],
+            'empresa' => ['nullable', 'string', 'max:255'],
+            'identificacion' => [
+                'nullable',
+                'string',
+                'max:13',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! $this->isValidEcuadorIdentification((string) $value)) {
+                        $fail('Ingrese una cedula o RUC ecuatoriano valido.');
+                    }
+                },
+            ],
+            'telefono' => ['nullable', 'string', 'max:30'],
+            'direccion' => ['nullable', 'string', 'max:255'],
+            'correo' => ['nullable', 'email', 'max:255'],
+        ];
+    }
+
+    private function isValidEcuadorIdentification(string $value): bool
+    {
+        $digits = preg_replace('/\D+/', '', $value) ?? '';
+
+        if ($digits === '') {
+            return true;
+        }
+
+        if (strlen($digits) === 10) {
+            return $this->isValidEcuadorCedula($digits);
+        }
+
+        if (strlen($digits) !== 13 || substr($digits, 10, 3) === '000') {
+            return false;
+        }
+
+        $thirdDigit = (int) $digits[2];
+
+        if ($thirdDigit < 6) {
+            return $this->isValidEcuadorCedula(substr($digits, 0, 10));
+        }
+
+        if ($thirdDigit === 6) {
+            return $this->isValidEcuadorRuc($digits, [3, 2, 7, 6, 5, 4, 3, 2], 8);
+        }
+
+        if ($thirdDigit === 9) {
+            return $this->isValidEcuadorRuc($digits, [4, 3, 2, 7, 6, 5, 4, 3, 2], 9);
+        }
+
+        return false;
+    }
+
+    private function isValidEcuadorCedula(string $cedula): bool
+    {
+        if (! preg_match('/^\d{10}$/', $cedula)) {
+            return false;
+        }
+
+        $province = (int) substr($cedula, 0, 2);
+
+        if ($province < 1 || $province > 24) {
+            return false;
+        }
+
+        $digits = array_map('intval', str_split($cedula));
+        $sum = 0;
+
+        for ($i = 0; $i < 9; $i++) {
+            $value = $i % 2 === 0 ? $digits[$i] * 2 : $digits[$i];
+            $sum += $value > 9 ? $value - 9 : $value;
+        }
+
+        $verifier = (10 - ($sum % 10)) % 10;
+
+        return $verifier === $digits[9];
+    }
+
+    private function isValidEcuadorRuc(string $ruc, array $coefficients, int $verifierPosition): bool
+    {
+        $province = (int) substr($ruc, 0, 2);
+
+        if ($province < 1 || $province > 24) {
+            return false;
+        }
+
+        $digits = array_map('intval', str_split($ruc));
+        $sum = 0;
+
+        foreach ($coefficients as $index => $coefficient) {
+            $sum += $digits[$index] * $coefficient;
+        }
+
+        $verifier = 11 - ($sum % 11);
+        $verifier = $verifier === 11 ? 0 : $verifier;
+        $verifier = $verifier === 10 ? 1 : $verifier;
+
+        return $verifier === $digits[$verifierPosition];
     }
 }

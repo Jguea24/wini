@@ -52,7 +52,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ $action }}" class="mt-6">
+                <form method="POST" action="{{ $action }}" class="mt-6" data-ecuador-id-form>
                     @csrf
                     @isset($method)
                         @method($method)
@@ -70,6 +70,12 @@
                                         value="{{ $field['value'] }}"
                                         placeholder="{{ $field['placeholder'] }}"
                                         @required($field['required'])
+                                        @if ($field['name'] === 'identificacion')
+                                            maxlength="13"
+                                            inputmode="numeric"
+                                            autocomplete="off"
+                                            data-ecuador-id-input
+                                        @endif
                                         class="{{ $inputClass }} @error($field['name']) border-red-300 focus:border-red-500 focus:ring-red-500/20 @enderror"
                                     >
 
@@ -94,6 +100,9 @@
                                             @break
                                     @endswitch
                                 </div>
+                                @if ($field['name'] === 'identificacion')
+                                    <p class="mt-2 hidden text-sm font-medium text-red-100" data-ecuador-id-message></p>
+                                @endif
                                 @error($field['name'])
                                     <p class="mt-2 text-sm font-medium text-red-100">{{ $message }}</p>
                                 @enderror
@@ -117,3 +126,132 @@
         </div>
     </div>
 </div>
+
+<script>
+    (() => {
+        const form = document.querySelector('[data-ecuador-id-form]');
+        const input = document.querySelector('[data-ecuador-id-input]');
+        const message = document.querySelector('[data-ecuador-id-message]');
+
+        if (!form || !input || !message) {
+            return;
+        }
+
+        function isValidCedula(value) {
+            if (!/^\d{10}$/.test(value)) {
+                return false;
+            }
+
+            const province = Number(value.substring(0, 2));
+
+            if (province < 1 || province > 24) {
+                return false;
+            }
+
+            const digits = value.split('').map(Number);
+            let sum = 0;
+
+            for (let index = 0; index < 9; index++) {
+                let current = index % 2 === 0 ? digits[index] * 2 : digits[index];
+                sum += current > 9 ? current - 9 : current;
+            }
+
+            const verifier = (10 - (sum % 10)) % 10;
+
+            return verifier === digits[9];
+        }
+
+        function isValidRuc(value, coefficients, verifierPosition) {
+            const province = Number(value.substring(0, 2));
+
+            if (province < 1 || province > 24) {
+                return false;
+            }
+
+            const digits = value.split('').map(Number);
+            const sum = coefficients.reduce((total, coefficient, index) => total + (digits[index] * coefficient), 0);
+            let verifier = 11 - (sum % 11);
+
+            if (verifier === 11) {
+                verifier = 0;
+            }
+
+            if (verifier === 10) {
+                verifier = 1;
+            }
+
+            return verifier === digits[verifierPosition];
+        }
+
+        function validateIdentification(value) {
+            if (value === '') {
+                return { valid: true, text: '' };
+            }
+
+            if (!/^\d+$/.test(value)) {
+                return { valid: false, text: 'Solo se permiten numeros.' };
+            }
+
+            if (value.length === 10) {
+                return isValidCedula(value)
+                    ? { valid: true, text: 'Cedula valida.' }
+                    : { valid: false, text: 'Cedula digitada incorrectamente.' };
+            }
+
+            if (value.length === 13) {
+                if (value.substring(10) === '000') {
+                    return { valid: false, text: 'El RUC debe terminar con un establecimiento valido.' };
+                }
+
+                const thirdDigit = Number(value[2]);
+
+                if (thirdDigit < 6) {
+                    return isValidCedula(value.substring(0, 10))
+                        ? { valid: true, text: 'RUC valido.' }
+                        : { valid: false, text: 'RUC digitado incorrectamente.' };
+                }
+
+                if (thirdDigit === 6) {
+                    return isValidRuc(value, [3, 2, 7, 6, 5, 4, 3, 2], 8)
+                        ? { valid: true, text: 'RUC valido.' }
+                        : { valid: false, text: 'RUC digitado incorrectamente.' };
+                }
+
+                if (thirdDigit === 9) {
+                    return isValidRuc(value, [4, 3, 2, 7, 6, 5, 4, 3, 2], 9)
+                        ? { valid: true, text: 'RUC valido.' }
+                        : { valid: false, text: 'RUC digitado incorrectamente.' };
+                }
+            }
+
+            return { valid: false, text: 'Ingrese una cedula de 10 digitos o un RUC de 13 digitos.' };
+        }
+
+        function paintValidation() {
+            const result = validateIdentification(input.value);
+
+            message.classList.toggle('hidden', result.text === '');
+            message.classList.toggle('text-red-100', !result.valid);
+            message.classList.toggle('text-emerald-100', result.valid);
+            message.textContent = result.text;
+            input.classList.toggle('border-red-300', !result.valid);
+            input.classList.toggle('focus:border-red-500', !result.valid);
+
+            return result.valid;
+        }
+
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(0, 13);
+            paintValidation();
+        });
+
+        input.addEventListener('blur', paintValidation);
+
+        form.addEventListener('submit', (event) => {
+            if (!paintValidation()) {
+                event.preventDefault();
+                input.focus();
+            }
+        });
+    })();
+</script>
