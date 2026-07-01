@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wini-pwa-v2';
+const CACHE_NAME = 'wini-pwa-v3';
 const scopeUrl = new URL(self.registration.scope);
 const appUrl = (path = '') => new URL(path, scopeUrl).href;
 const OFFLINE_URL = appUrl('login');
