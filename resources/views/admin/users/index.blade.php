@@ -29,6 +29,7 @@
                             <tr>
                                 <th class="px-5 py-3">Usuario</th>
                                 <th class="px-5 py-3">Rol</th>
+                                <th class="px-5 py-3">Organigrama</th>
                                 <th class="px-5 py-3">Estado</th>
                                 <th class="px-5 py-3">Ventas</th>
                                 <th class="px-5 py-3">Gastos</th>
@@ -58,6 +59,16 @@
                                         <span class="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-700">{{ ucfirst($user->role) }}</span>
                                     </td>
                                     <td class="px-5 py-4">
+                                        @if ($user->show_in_org_chart)
+                                            <div>
+                                                <span class="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-700">{{ ucfirst($user->org_chart_level) }}</span>
+                                                <p class="mt-1 text-xs text-gray-500">{{ $user->org_chart_position ?: 'Sin cargo' }}</p>
+                                            </div>
+                                        @else
+                                            <span class="text-xs font-medium text-gray-400">No visible</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-5 py-4">
                                         <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $user->is_active ? 'bg-amber-50 text-amber-900' : 'bg-red-50 text-red-700' }}">
                                             {{ $user->is_active ? 'Activo' : 'Inactivo' }}
                                         </span>
@@ -71,7 +82,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-5 py-10 text-center text-gray-500">No hay usuarios registrados.</td>
+                                    <td colspan="8" class="px-5 py-10 text-center text-gray-500">No hay usuarios registrados.</td>
                                 </tr>
                             @endforelse
                         </tbody>

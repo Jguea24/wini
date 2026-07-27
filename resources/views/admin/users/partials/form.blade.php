@@ -33,6 +33,41 @@
         </label>
     </div>
 
+    <div class="flex items-center rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+        <label class="inline-flex items-center gap-3 text-sm font-medium text-gray-800">
+            <input type="checkbox" name="show_in_org_chart" value="1" @checked(old('show_in_org_chart', $user->show_in_org_chart)) class="rounded border-gray-300 text-amber-900 focus:ring-amber-800">
+            Mostrar en organigrama
+        </label>
+    </div>
+
+    <div class="floating-control">
+        <label for="org_chart_position" class="floating-label">Cargo en organigrama</label>
+        <input id="org_chart_position" name="org_chart_position" value="{{ old('org_chart_position', $user->org_chart_position) }}" placeholder="Direccion Comercial">
+        @error('org_chart_position')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="floating-control">
+        <label for="org_chart_level" class="floating-label">Nivel</label>
+        <select id="org_chart_level" name="org_chart_level" required>
+            <option value="ceo" @selected(old('org_chart_level', $user->org_chart_level ?: 'director') === 'ceo')>CEO</option>
+            <option value="director" @selected(old('org_chart_level', $user->org_chart_level ?: 'director') === 'director')>Direccion</option>
+            <option value="support" @selected(old('org_chart_level', $user->org_chart_level ?: 'director') === 'support')>Talento humano / apoyo</option>
+        </select>
+        @error('org_chart_level')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="floating-control">
+        <label for="org_chart_order" class="floating-label">Orden</label>
+        <input id="org_chart_order" name="org_chart_order" type="number" min="0" max="999" value="{{ old('org_chart_order', $user->org_chart_order ?? 0) }}">
+        @error('org_chart_order')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
     <div x-data="{ showPassword: false }">
         <label for="password" class="mb-1 block text-sm font-medium text-gray-700">Contrasena {{ $requirePassword ? '' : '(opcional)' }}</label>
         <div class="relative">

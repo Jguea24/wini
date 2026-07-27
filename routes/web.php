@@ -7,6 +7,7 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\InversionController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\OrganigramaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SettingController;
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('facturas', FacturaController::class)->only(['index', 'store', 'show', 'update']);
     Route::get('/facturas/{factura}/pdf', [FacturaController::class, 'pdf'])->name('facturas.pdf');
     Route::resource('clientes', ClienteController::class);
+
+    Route::get('/organigrama', OrganigramaController::class)->name('organigrama.index');
 
     Route::get('/mercado-cacao', [CocoaMarketController::class, 'index'])->name('mercado-cacao.index');
     Route::get('/mercado-cacao/live', [CocoaMarketController::class, 'live'])->name('mercado-cacao.live');

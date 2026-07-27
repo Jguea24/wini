@@ -28,7 +28,7 @@ class FacturaController extends Controller
             ->with(['venta.cliente', 'user', 'actualizador', 'anulador'])
             ->when($filters['estado'] ?? null, fn ($query, $estado) => $query->where('estado', $estado))
             ->betweenDates($filters['desde'] ?? null, $filters['hasta'] ?? null)
-            ->latest('fecha_emision')
+            ->orderBy('numero')
             ->paginate(10)
             ->withQueryString();
 
@@ -82,11 +82,19 @@ class FacturaController extends Controller
         return redirect()->route('facturas.show', $factura)->with('status', 'Factura generada correctamente.');
     }
 
-    public function show(Factura $factura): View
+    public function show(Factura $factura, PdfQrCodeService $qrCode): View
     {
         $factura->load(['venta.cliente', 'venta.user', 'user', 'actualizador', 'anulador']);
 
-        return view('facturas.show', compact('factura'));
+        $company = $this->companyData();
+        $invoiceMeta = $this->invoiceMeta($factura, $company);
+
+        return view('facturas.show', [
+            'factura' => $factura,
+            'company' => $company,
+            'invoiceMeta' => $invoiceMeta,
+            'qrCodeDataUri' => $qrCode->dataUri($this->invoiceQrPayload($factura, $company, $invoiceMeta)),
+        ]);
     }
 
     public function update(Request $request, Factura $factura): RedirectResponse
@@ -112,34 +120,59 @@ class FacturaController extends Controller
     public function pdf(Factura $factura, PdfQrCodeService $qrCode)
     {
         $factura->load(['venta.cliente', 'venta.user', 'user', 'actualizador', 'anulador']);
-        $company = [
-            'name' => Setting::getValue('company_name', 'Wini'),
-            'ruc' => Setting::getValue('company_ruc', ''),
-            'address' => Setting::getValue('company_address', ''),
-            'phone' => Setting::getValue('company_phone', ''),
-            'email' => Setting::getValue('company_email', ''),
-        ];
+        $company = $this->companyData();
+        $invoiceMeta = $this->invoiceMeta($factura, $company);
 
         return app('dompdf.wrapper')
             ->loadView('facturas.pdf.show', [
                 'factura' => $factura,
                 'company' => $company,
+                'invoiceMeta' => $invoiceMeta,
                 'footer' => Setting::getValue('report_footer', 'Producto sostenible'),
                 'signaturePath' => $this->invoiceSignaturePath(),
                 'signatureName' => Setting::getValue('invoice_signature_name', 'Johnny Grefa'),
                 'signatureRole' => Setting::getValue('invoice_signature_role', 'CEO de Wini'),
-                'qrCodeDataUri' => $qrCode->dataUri($this->invoiceQrPayload($factura, $company)),
+                'qrCodeDataUri' => $qrCode->dataUri($this->invoiceQrPayload($factura, $company, $invoiceMeta)),
             ])
             ->download("factura-{$factura->numero}.pdf");
     }
 
-    private function invoiceQrPayload(Factura $factura, array $company): string
+    private function companyData(): array
+    {
+        return [
+            'name' => Setting::getValue('company_name', 'Wini'),
+            'ruc' => Setting::getValue('company_ruc', ''),
+            'address' => Setting::getValue('company_address', ''),
+            'phone' => Setting::getValue('company_phone', ''),
+            'email' => Setting::getValue('company_email', ''),
+            'branch_address' => Setting::getValue('company_branch_address', Setting::getValue('company_address', '')),
+            'accounting_required' => Setting::getValue('company_accounting_required', 'NO'),
+        ];
+    }
+
+    private function invoiceMeta(Factura $factura, array $company): array
+    {
+        return [
+            'document_type' => 'FACTURA',
+            'document_code' => '01',
+            'authorization_number' => $this->authorizationNumber($factura),
+            'access_key' => $this->accessKey($factura, $company),
+            'issued_at' => ($factura->created_at ?? $factura->fecha_emision->startOfDay())->format('d/m/Y H:i:s'),
+            'environment' => Setting::getValue('invoice_environment', 'PRODUCCION'),
+            'emission' => Setting::getValue('invoice_emission_type', 'NORMAL'),
+            'payment_form' => strtoupper(str_replace('_', ' ', $factura->venta->metodo_pago ?? 'efectivo')),
+        ];
+    }
+
+    private function invoiceQrPayload(Factura $factura, array $company, array $invoiceMeta): string
     {
         return implode("\n", [
             'WINI - FACTURA',
             'Empresa: '.$company['name'],
             'RUC: '.($company['ruc'] ?: 'No registrado'),
             'Numero: '.$factura->numero,
+            'Autorizacion: '.$invoiceMeta['authorization_number'],
+            'Clave acceso: '.$invoiceMeta['access_key'],
             'Fecha: '.$factura->fecha_emision->format('Y-m-d'),
             'Cliente: '.$factura->venta->cliente->nombre_comercial,
             'Identificacion: '.($factura->venta->cliente->identificacion ?: 'No registrada'),
@@ -147,6 +180,24 @@ class FacturaController extends Controller
             'Estado: '.ucfirst($factura->estado),
             'URL: '.route('facturas.show', $factura),
         ]);
+    }
+
+    private function authorizationNumber(Factura $factura): string
+    {
+        $digits = preg_replace('/\D/', '', $factura->numero) ?: (string) $factura->id;
+
+        return str_pad(substr($digits, -10), 10, '0', STR_PAD_LEFT);
+    }
+
+    private function accessKey(Factura $factura, array $company): string
+    {
+        $date = $factura->fecha_emision->format('dmY');
+        $ruc = str_pad(substr(preg_replace('/\D/', '', $company['ruc']) ?: '0', 0, 13), 13, '0', STR_PAD_LEFT);
+        $number = str_pad(substr(preg_replace('/\D/', '', $factura->numero) ?: (string) $factura->id, -9), 9, '0', STR_PAD_LEFT);
+        $seed = $date.'01'.$ruc.'2'.$number.str_pad((string) $factura->id, 8, '0', STR_PAD_LEFT);
+        $checksum = str_pad((string) (abs(crc32($seed)) % 100000000), 8, '0', STR_PAD_LEFT);
+
+        return substr($seed.$checksum, 0, 49);
     }
 
     private function invoiceSignaturePath(): ?string

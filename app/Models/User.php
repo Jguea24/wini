@@ -26,6 +26,10 @@ class User extends Authenticatable
         'profile_photo_path',
         'role',
         'is_active',
+        'show_in_org_chart',
+        'org_chart_position',
+        'org_chart_level',
+        'org_chart_order',
         'password',
     ];
 
@@ -49,6 +53,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'is_active' => 'boolean',
+            'show_in_org_chart' => 'boolean',
             'password' => 'hashed',
         ];
     }

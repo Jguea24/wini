@@ -23,6 +23,9 @@
                     <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')">
                         Clientes
                     </x-nav-link>
+                    <x-nav-link :href="route('organigrama.index')" :active="request()->routeIs('organigrama.*')">
+                        Organigrama
+                    </x-nav-link>
                     <x-nav-link :href="route('gastos.index')" :active="request()->routeIs('gastos.*')">
                         {{ __('wini.expenses') }}
                     </x-nav-link>
@@ -112,6 +115,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')">
                 Clientes
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('organigrama.index')" :active="request()->routeIs('organigrama.*')">
+                Organigrama
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('gastos.index')" :active="request()->routeIs('gastos.*')">
                 {{ __('wini.expenses') }}

@@ -31,6 +31,10 @@ class UserManagementController extends Controller
             'role' => ['required', Rule::in(['admin', 'usuario'])],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'is_active' => ['nullable', 'boolean'],
+            'show_in_org_chart' => ['nullable', 'boolean'],
+            'org_chart_position' => ['nullable', 'string', 'max:120'],
+            'org_chart_level' => ['required', Rule::in(['ceo', 'director', 'support'])],
+            'org_chart_order' => ['nullable', 'integer', 'min:0', 'max:999'],
         ]);
 
         User::create([
@@ -39,6 +43,10 @@ class UserManagementController extends Controller
             'email_verified_at' => now(),
             'role' => $data['role'],
             'is_active' => $request->boolean('is_active'),
+            'show_in_org_chart' => $request->boolean('show_in_org_chart'),
+            'org_chart_position' => $data['org_chart_position'] ?? null,
+            'org_chart_level' => $data['org_chart_level'],
+            'org_chart_order' => $data['org_chart_order'] ?? 0,
             'password' => Hash::make($data['password']),
         ]);
 
@@ -58,6 +66,10 @@ class UserManagementController extends Controller
             'role' => ['required', Rule::in(['admin', 'usuario'])],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'is_active' => ['nullable', 'boolean'],
+            'show_in_org_chart' => ['nullable', 'boolean'],
+            'org_chart_position' => ['nullable', 'string', 'max:120'],
+            'org_chart_level' => ['required', Rule::in(['ceo', 'director', 'support'])],
+            'org_chart_order' => ['nullable', 'integer', 'min:0', 'max:999'],
         ]);
 
         $payload = [
@@ -65,6 +77,10 @@ class UserManagementController extends Controller
             'email' => $data['email'],
             'role' => $data['role'],
             'is_active' => $request->boolean('is_active'),
+            'show_in_org_chart' => $request->boolean('show_in_org_chart'),
+            'org_chart_position' => $data['org_chart_position'] ?? null,
+            'org_chart_level' => $data['org_chart_level'],
+            'org_chart_order' => $data['org_chart_order'] ?? 0,
         ];
 
         if (! empty($data['password'])) {
