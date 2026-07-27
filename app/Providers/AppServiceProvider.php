@@ -10,6 +10,8 @@ use App\Policies\InversionPolicy;
 use App\Policies\VentaPolicy;
 use App\Repositories\CocoaMarketPriceRepository;
 use App\Repositories\Contracts\CocoaMarketPriceRepositoryInterface;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +31,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        ResetPassword::toMailUsing(function (object $notifiable, string $token) {
+            $resetUrl = URL::route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false);
+
+            return (new MailMessage)
+                ->subject('Recuperar la contraseña')
+                ->view('emails.auth.reset-password', [
+                    'user' => $notifiable,
+                    'resetUrl' => url($resetUrl),
+                    'expiresIn' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60),
+                ]);
+        });
+
         Gate::policy(Venta::class, VentaPolicy::class);
         Gate::policy(Gasto::class, GastoPolicy::class);
         Gate::policy(Inversion::class, InversionPolicy::class);
