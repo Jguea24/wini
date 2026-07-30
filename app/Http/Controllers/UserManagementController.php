@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -37,7 +39,7 @@ class UserManagementController extends Controller
             'org_chart_order' => ['nullable', 'integer', 'min:0', 'max:999'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'email_verified_at' => now(),
@@ -49,6 +51,12 @@ class UserManagementController extends Controller
             'org_chart_order' => $data['org_chart_order'] ?? 0,
             'password' => Hash::make($data['password']),
         ]);
+
+        try {
+            Mail::to($user->email)->send(new WelcomeEmail($user));
+        } catch (\Throwable $e) {
+            logger()->error('Error al enviar correo de bienvenida: '.$e->getMessage());
+        }
 
         return redirect()->route('admin.users.index')->with('status', 'Usuario creado correctamente.');
     }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeUserMail;
 use App\Models\Cliente;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class ClienteController extends Controller
@@ -36,7 +38,15 @@ class ClienteController extends Controller
     {
         $data = $request->validate($this->rules());
 
-        Cliente::create($data + ['created_by' => $request->user()->id]);
+        $cliente = Cliente::create($data + ['created_by' => $request->user()->id]);
+
+        if ($cliente->correo) {
+            try {
+                Mail::to($cliente->correo)->send(new WelcomeUserMail($cliente));
+            } catch (\Throwable $e) {
+                logger()->error('Error al enviar correo de bienvenida al cliente: '.$e->getMessage());
+            }
+        }
 
         return redirect()->route('clientes.index')->with('status', 'Cliente creado correctamente.');
     }
