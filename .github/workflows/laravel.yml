@@ -32,6 +32,18 @@ jobs:
       - name: Instalar dependencias
         run: composer install --no-interaction --prefer-dist
 
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias de frontend
+        run: npm ci
+
+      - name: Compilar assets de frontend
+        run: npm run build
+
       - name: Crear archivo .env
         run: cp .env.example .env
 
