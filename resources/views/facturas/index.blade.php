@@ -78,7 +78,17 @@
                             <td class="px-5 py-4 text-stone-600">{{ $factura->user?->name ?? 'Sin usuario' }}</td>
                             <td class="px-5 py-4 text-stone-600">{{ $factura->actualizador?->name ?? 'Sin cambios' }}</td>
                             <td class="px-5 py-4 text-right">
-                                <a href="{{ route('facturas.show', $factura) }}" class="rounded-md border border-stone-300 px-3 py-1.5 font-semibold text-stone-700 hover:bg-stone-50">Ver</a>
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('facturas.show', $factura) }}" class="rounded-md border border-stone-300 px-3 py-1.5 font-semibold text-stone-700 hover:bg-stone-50">Ver</a>
+                                    @if ($factura->venta?->cliente?->correo)
+                                        <form method="POST" action="{{ route('facturas.send-email', $factura) }}" class="inline">
+                                            @csrf
+                                            <button type="submit" class="rounded-md bg-stone-950 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-900" title="Enviar por correo a {{ $factura->venta->cliente->correo }}">
+                                                Enviar
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

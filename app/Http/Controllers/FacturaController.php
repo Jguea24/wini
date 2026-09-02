@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendInvoiceEmailJob;
 use App\Models\Factura;
-use App\Models\Setting;
 use App\Models\Venta;
-use App\Services\PdfQrCodeService;
+use App\Services\FacturaPdfService;
+use App\Services\FacturaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -57,21 +57,7 @@ class FacturaController extends Controller
                     return $venta->factura;
                 }
 
-                $subtotal = (float) $venta->total;
-                $taxRate = (float) Setting::getValue('invoice_tax_rate', '0');
-                $impuesto = round($subtotal * ($taxRate / 100), 2);
-
-                return Factura::create([
-                    'venta_id' => $venta->id,
-                    'user_id' => $request->user()->id,
-                    'numero' => $this->nextNumber(),
-                    'fecha_emision' => now()->toDateString(),
-                    'subtotal' => $subtotal,
-                    'descuento' => 0,
-                    'impuesto' => $impuesto,
-                    'total' => $subtotal + $impuesto,
-                    'estado' => 'emitida',
-                ]);
+                return app(FacturaService::class)->createForVenta($venta, $request->user());
             });
         } catch (\Throwable $exception) {
             Log::error('No se pudo generar la factura.', ['exception' => $exception]);
@@ -82,19 +68,9 @@ class FacturaController extends Controller
         return redirect()->route('facturas.show', $factura)->with('status', 'Factura generada correctamente.');
     }
 
-    public function show(Factura $factura, PdfQrCodeService $qrCode): View
+    public function show(Factura $factura, FacturaPdfService $pdfService): View
     {
-        $factura->load(['venta.cliente', 'venta.user', 'user', 'actualizador', 'anulador']);
-
-        $company = $this->companyData();
-        $invoiceMeta = $this->invoiceMeta($factura, $company);
-
-        return view('facturas.show', [
-            'factura' => $factura,
-            'company' => $company,
-            'invoiceMeta' => $invoiceMeta,
-            'qrCodeDataUri' => $qrCode->dataUri($this->invoiceQrPayload($factura, $company, $invoiceMeta)),
-        ]);
+        return view('facturas.show', $pdfService->viewData($factura));
     }
 
     public function update(Request $request, Factura $factura): RedirectResponse
@@ -117,128 +93,38 @@ class FacturaController extends Controller
         return redirect()->route('facturas.show', $factura)->with('status', 'Factura actualizada correctamente.');
     }
 
-    public function pdf(Factura $factura, PdfQrCodeService $qrCode)
+    public function pdf(Factura $factura, FacturaPdfService $pdfService)
     {
-        $factura->load(['venta.cliente', 'venta.user', 'user', 'actualizador', 'anulador']);
-        $company = $this->companyData();
-        $invoiceMeta = $this->invoiceMeta($factura, $company);
-
         return app('dompdf.wrapper')
-            ->loadView('facturas.pdf.show', [
-                'factura' => $factura,
-                'company' => $company,
-                'invoiceMeta' => $invoiceMeta,
-                'footer' => Setting::getValue('report_footer', 'Producto sostenible'),
-                'signaturePath' => $this->invoiceSignaturePath(),
-                'signatureName' => Setting::getValue('invoice_signature_name', 'Johnny Grefa'),
-                'signatureRole' => Setting::getValue('invoice_signature_role', 'CEO de Wini'),
-                'qrCodeDataUri' => $qrCode->dataUri($this->invoiceQrPayload($factura, $company, $invoiceMeta)),
-            ])
+            ->loadView('facturas.pdf.show', $pdfService->viewData($factura))
             ->download("factura-{$factura->numero}.pdf");
     }
 
-    private function companyData(): array
+    public function sendEmail(Factura $factura): RedirectResponse
     {
-        return [
-            'name' => Setting::getValue('company_name', 'Wini'),
-            'ruc' => Setting::getValue('company_ruc', ''),
-            'address' => Setting::getValue('company_address', ''),
-            'phone' => Setting::getValue('company_phone', ''),
-            'email' => Setting::getValue('company_email', ''),
-            'branch_address' => Setting::getValue('company_branch_address', Setting::getValue('company_address', '')),
-            'accounting_required' => Setting::getValue('company_accounting_required', 'NO'),
-        ];
-    }
+        $factura->loadMissing('venta.cliente');
 
-    private function invoiceMeta(Factura $factura, array $company): array
-    {
-        return [
-            'document_type' => 'FACTURA',
-            'document_code' => '01',
-            'authorization_number' => $this->authorizationNumber($factura),
-            'access_key' => $this->accessKey($factura, $company),
-            'issued_at' => ($factura->created_at ?? $factura->fecha_emision->startOfDay())->format('d/m/Y H:i:s'),
-            'environment' => Setting::getValue('invoice_environment', 'PRODUCCION'),
-            'emission' => Setting::getValue('invoice_emission_type', 'NORMAL'),
-            'payment_form' => strtoupper(str_replace('_', ' ', $factura->venta->metodo_pago ?? 'efectivo')),
-        ];
-    }
-
-    private function invoiceQrPayload(Factura $factura, array $company, array $invoiceMeta): string
-    {
-        return implode("\n", [
-            'WINI - FACTURA',
-            'Empresa: '.$company['name'],
-            'RUC: '.($company['ruc'] ?: 'No registrado'),
-            'Numero: '.$factura->numero,
-            'Autorizacion: '.$invoiceMeta['authorization_number'],
-            'Clave acceso: '.$invoiceMeta['access_key'],
-            'Fecha: '.$factura->fecha_emision->format('Y-m-d'),
-            'Cliente: '.$factura->venta->cliente->nombre_comercial,
-            'Identificacion: '.($factura->venta->cliente->identificacion ?: 'No registrada'),
-            'Total: $'.number_format($factura->total, 2, '.', ''),
-            'Estado: '.ucfirst($factura->estado),
-            'URL: '.route('facturas.show', $factura),
-        ]);
-    }
-
-    private function authorizationNumber(Factura $factura): string
-    {
-        $digits = preg_replace('/\D/', '', $factura->numero) ?: (string) $factura->id;
-
-        return str_pad(substr($digits, -10), 10, '0', STR_PAD_LEFT);
-    }
-
-    private function accessKey(Factura $factura, array $company): string
-    {
-        $date = $factura->fecha_emision->format('dmY');
-        $ruc = str_pad(substr(preg_replace('/\D/', '', $company['ruc']) ?: '0', 0, 13), 13, '0', STR_PAD_LEFT);
-        $number = str_pad(substr(preg_replace('/\D/', '', $factura->numero) ?: (string) $factura->id, -9), 9, '0', STR_PAD_LEFT);
-        $seed = $date.'01'.$ruc.'2'.$number.str_pad((string) $factura->id, 8, '0', STR_PAD_LEFT);
-        $checksum = str_pad((string) (abs(crc32($seed)) % 100000000), 8, '0', STR_PAD_LEFT);
-
-        return substr($seed.$checksum, 0, 49);
-    }
-
-    private function invoiceSignaturePath(): ?string
-    {
-        $path = Setting::getValue('invoice_signature_path');
-
-        if (! $path || ! Storage::disk('public')->exists($path)) {
-            return null;
+        if (! $factura->venta || ! $factura->venta->cliente) {
+            return back()->withErrors(['general' => 'No se puede enviar la factura porque no tiene un cliente asociado.']);
         }
 
-        return Storage::disk('public')->path($path);
-    }
+        $cliente = $factura->venta->cliente;
 
-    private function nextNumber(): string
-    {
-        $year = now()->year;
-        $prefix = strtoupper(preg_replace('/[^A-Z0-9-]/', '', Setting::getValue('invoice_prefix', 'FAC')) ?: 'FAC');
-        $setting = DB::table('settings')->where('key', 'invoice_next_number')->lockForUpdate()->first();
-
-        if (! $setting) {
-            DB::table('settings')->insert(['key' => 'invoice_next_number', 'value' => '1']);
-            $sequence = 1;
-        } else {
-            $sequence = max(1, (int) $setting->value);
+        if (! $cliente->correo) {
+            return back()->withErrors(['general' => 'No se puede enviar la factura porque el cliente no tiene un correo electrónico registrado.']);
         }
 
-        $last = Factura::query()
-            ->where('numero', 'like', "{$prefix}-{$year}-%")
-            ->lockForUpdate()
-            ->latest('id')
-            ->first();
+        try {
+            SendInvoiceEmailJob::dispatch($factura->id);
+        } catch (\Throwable $exception) {
+            Log::error('Error al solicitar envío de factura por correo.', [
+                'factura_id' => $factura->id,
+                'exception' => $exception,
+            ]);
 
-        if ($last) {
-            $sequence = max($sequence, ((int) substr($last->numero, -6)) + 1);
+            return back()->withErrors(['general' => 'Ocurrió un error al procesar el envío de la factura.']);
         }
 
-        DB::table('settings')->updateOrInsert(
-            ['key' => 'invoice_next_number'],
-            ['value' => (string) ($sequence + 1)]
-        );
-
-        return sprintf('%s-%s-%06d', $prefix, $year, $sequence);
+        return back()->with('status', "La factura N.º {$factura->numero} ha sido enviada al correo {$cliente->correo}.");
     }
 }

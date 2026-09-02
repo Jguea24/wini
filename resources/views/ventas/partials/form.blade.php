@@ -30,12 +30,12 @@
 <section class="border-t border-stone-100 pt-6">
     <div>
         <h2 class="text-lg font-semibold text-stone-950">Datos del cliente</h2>
-        <p class="mt-1 text-sm text-stone-500">Estos datos se reutilizan para facturas y registros.</p>
+        <p class="mt-1 text-sm text-stone-500">Informacion del comprador que se reutiliza para facturas y registros.</p>
     </div>
 
     <div class="mt-5 grid gap-5 sm:grid-cols-3">
         <div class="floating-control">
-            <label for="cliente_nombre" class="floating-label">Cliente</label>
+            <label for="cliente_nombre" class="floating-label">Nombre del cliente</label>
             <input id="cliente_nombre" name="cliente_nombre" value="{{ old('cliente_nombre', $cliente?->nombre) }}" required>
             <x-input-error :messages="$errors->get('cliente_nombre')" class="mt-2" />
         </div>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="floating-control">
-            <label for="cliente_identificacion" class="floating-label">RUC/Cedula</label>
+            <label for="cliente_identificacion" class="floating-label">RUC/Cedula del cliente</label>
             <input id="cliente_identificacion" name="cliente_identificacion" value="{{ old('cliente_identificacion', $cliente?->identificacion) }}">
             <x-input-error :messages="$errors->get('cliente_identificacion')" class="mt-2" />
         </div>

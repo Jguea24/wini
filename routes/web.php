@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     ]);
     Route::resource('facturas', FacturaController::class)->only(['index', 'store', 'show', 'update']);
     Route::get('/facturas/{factura}/pdf', [FacturaController::class, 'pdf'])->name('facturas.pdf');
+    Route::post('/facturas/{factura}/enviar', [FacturaController::class, 'sendEmail'])->name('facturas.send-email');
     Route::resource('clientes', ClienteController::class);
 
     Route::get('/organigrama', OrganigramaController::class)->name('organigrama.index');

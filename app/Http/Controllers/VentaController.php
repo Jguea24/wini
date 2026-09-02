@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Ventas\StoreVentaRequest;
 use App\Http\Requests\Ventas\UpdateVentaRequest;
-use App\Models\Cliente;
 use App\Models\Venta;
+use App\Services\VentaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -36,26 +35,20 @@ class VentaController extends Controller
         return view('ventas.create');
     }
 
-    public function store(StoreVentaRequest $request): RedirectResponse
+    public function store(StoreVentaRequest $request, VentaService $ventas): RedirectResponse
     {
         try {
-            DB::transaction(function () use ($request): void {
-                $data = $request->validated();
-                $cliente = $this->findOrCreateCliente($data);
+            $resultado = $ventas->registrar($request->validated(), $request->user());
 
-                Venta::create([
-                    'cliente_id' => $cliente->id,
-                    'user_id' => $request->user()->id,
-                    'created_by' => $request->user()->id,
-                    'fecha' => $data['fecha'],
-                    'libras' => $data['libras'],
-                    'precio_por_libra' => $data['precio_por_libra'],
-                    'total' => round($data['libras'] * $data['precio_por_libra'], 2),
-                    'metodo_pago' => $data['metodo_pago'],
-                ]);
-            });
+            $status = 'Venta registrada correctamente.';
 
-            return redirect()->route('ventas.index')->with('status', 'Venta registrada correctamente.');
+            if ($resultado['factura_email_solicitado']) {
+                $status .= ' La factura será enviada al correo del cliente.';
+            } else {
+                $status .= ' No fue posible enviar la factura por correo porque el cliente no tiene correo registrado.';
+            }
+
+            return redirect()->route('ventas.index')->with('status', $status);
         } catch (\Throwable $exception) {
             Log::error('No se pudo registrar la venta.', ['exception' => $exception]);
 
@@ -72,23 +65,10 @@ class VentaController extends Controller
         return view('ventas.edit', compact('venta'));
     }
 
-    public function update(UpdateVentaRequest $request, Venta $venta): RedirectResponse
+    public function update(UpdateVentaRequest $request, Venta $venta, VentaService $ventas): RedirectResponse
     {
         try {
-            DB::transaction(function () use ($request, $venta): void {
-                $data = $request->validated();
-                $cliente = $this->findOrCreateCliente($data);
-
-                $venta->update([
-                    'cliente_id' => $cliente->id,
-                    'updated_by' => $request->user()->id,
-                    'fecha' => $data['fecha'],
-                    'libras' => $data['libras'],
-                    'precio_por_libra' => $data['precio_por_libra'],
-                    'total' => round($data['libras'] * $data['precio_por_libra'], 2),
-                    'metodo_pago' => $data['metodo_pago'],
-                ]);
-            });
+            $ventas->actualizar($venta, $request->validated(), $request->user());
 
             return redirect()->route('ventas.index')->with('status', 'Venta actualizada correctamente.');
         } catch (\Throwable $exception) {
@@ -106,21 +86,5 @@ class VentaController extends Controller
         $venta->delete();
 
         return redirect()->route('ventas.index')->with('status', 'Venta eliminada correctamente.');
-    }
-
-    private function findOrCreateCliente(array $data): Cliente
-    {
-        return Cliente::updateOrCreate(
-            [
-                'nombre' => $data['cliente_nombre'],
-                'empresa' => $data['cliente_empresa'],
-            ],
-            [
-                'identificacion' => $data['cliente_identificacion'] ?? null,
-                'telefono' => $data['cliente_telefono'],
-                'direccion' => $data['cliente_direccion'] ?? null,
-                'correo' => $data['cliente_correo'] ?? null,
-            ],
-        );
     }
 }

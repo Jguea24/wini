@@ -9,8 +9,17 @@
             <h1 class="mt-1 text-3xl font-bold tracking-tight text-stone-950">Factura {{ $factura->numero }}</h1>
             <p class="mt-1 text-sm text-stone-500">Emitida el {{ $factura->fecha_emision->format('Y-m-d') }}</p>
         </div>
-        <div class="flex flex-wrap gap-2">
-            <a href="{{ route('facturas.pdf', $factura) }}" class="btn-cacao">Descargar PDF</a>
+        <div class="flex flex-wrap items-center gap-2">
+            <form method="POST" action="{{ route('facturas.send-email', $factura) }}" class="inline">
+                @csrf
+                <button type="submit" class="btn-cacao inline-flex items-center gap-2" @if(! $cliente?->correo) disabled title="El cliente no tiene correo registrado" @endif>
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Enviar por correo
+                </button>
+            </form>
+            <a href="{{ route('facturas.pdf', $factura) }}" class="btn-ghost">Descargar PDF</a>
             <a href="{{ route('facturas.index') }}" class="btn-ghost">Volver</a>
         </div>
     </div>

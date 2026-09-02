@@ -42,7 +42,7 @@ class Factura extends Model
 
     public function venta(): BelongsTo
     {
-        return $this->belongsTo(Venta::class);
+        return $this->belongsTo(Venta::class)->withTrashed();
     }
 
     public function user(): BelongsTo
